@@ -27,7 +27,7 @@
                 <div class="process_bar" style="">
                   <div id="process-element" :style="{'width': this.progress + '%'}" class="process-element"
                        data-content="5">
-                    <img alt="" src="https://learn.mochidemy.com/image/9362859030ff2f1748657ae47ef40370.png">
+                    <img alt="" src="img/theme/quyt.png">
                   </div>
                 </div>
               </div>
@@ -98,7 +98,7 @@
             </div>
           </div>
           <div class="position-a mochi-hello" style="bottom: 0px; left: 0px;">
-            <img src="https://learn.mochidemy.com/svg/icon-hello.svg" style="width: 100px">
+            <img src="img/theme/icon-hello.svg" style="width: 100px">
           </div>
         </div>
         <div class="col-3 _col-3 text-center position-r">

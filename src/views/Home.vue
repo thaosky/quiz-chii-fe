@@ -7,7 +7,7 @@
         </div>
         <div class="row ">
           <div class="text-start" style="position: relative; min-width:320px; display: inline-flex">
-            <img id="hand-wave-static" alt="" src="https://learn.mochidemy.com/image/mochi_new.png"
+            <img id="hand-wave-static" alt="" src="img/theme/mochi_new.png"
                  style="height: 140%; margin: 0 0 -5vw 25vw;">
             <div id="choose-start" style="align-self: center">
               <p id="memorize-title" style="color: rgba(91, 45, 17, 1); font-weight: bold; margin-bottom: 20px">

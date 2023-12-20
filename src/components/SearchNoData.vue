@@ -1,7 +1,7 @@
 <template>
   <div class="search-no-data" style="">
     <div class="w-100 text-center" style="margin-top: 30px">
-      <img src="https://learn.mochidemy.com/image/2d91da53346559194e2f37374c65cadc.png" style="width: 200px">
+      <img src="img/theme/mochi-search.png" style="width: 200px">
       <div class="mt-3">
         <p style="font-weight: bold; font-size: 15px; width: 70%; margin-left: 15%">
           <slot>

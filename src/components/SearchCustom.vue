@@ -21,7 +21,7 @@
     </div>
 
     <div class="search__image search__right" @click="$emit('submit', selectedTagId, keyword)">
-      <img src="https://learn.mochidemy.com/svg/search.svg" class="w-100" alt="">
+      <img src="img/theme/search.svg" class="w-100" alt="">
     </div>
   </div>
 
