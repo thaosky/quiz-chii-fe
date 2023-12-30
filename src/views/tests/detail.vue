@@ -11,17 +11,17 @@
         <div class="col-6 _col-2 main-center" style="padding-bottom: 10px; min-height: 616px;">
           <div class="div-review" style="">
             <div class="row div_process" style="margin: 0; padding: 30px 0 10px">
-              <div class="col-2 text-center">
-                <img src="https://learn.mochidemy.com/svg/close_game.svg" style="width: 25px; cursor: pointer"
-                     @click="endTestEarly">
-              </div>
-              <div class="col-9">
+              <div class="col-9 offset-1">
                 <div class="process_bar" style="">
                   <div id="process-element" :style="{'width': this.progress + '%'}" class="process-element"
                        data-content="5">
                     <img alt="" src="img/theme/quyt.png">
                   </div>
                 </div>
+              </div>
+              <div class="col-2 text-center">
+                <img src="https://learn.mochidemy.com/svg/close_game.svg" style="width: 25px; cursor: pointer"
+                     @click="endTestEarly">
               </div>
             </div>
 
@@ -152,24 +152,6 @@ export default {
   },
   async created () {
     await this.getQuestions()
-    await axios.get('http://localhost:8080/quiz/api/tests/' + this.$route.params.id,
-        {
-          headers: {
-            'Authorization': `Bearer ${store.token}`
-          }
-        })
-        .then(response => {
-          this.questions = response.data.data.questionList
-          this.availableTime = response.data.data.availableTime * 60 // convert to seconds
-          // set Interval to count down. When time is up, submit test and clear interval
-          this.interval = setInterval(() => {
-            this.passedTime++
-            if (this.passedTime >= this.availableTime) {
-              this.submit()
-              clearInterval(this.interval)
-            }
-          }, 1000)
-        })
   },
   methods: {
     endTestEarly () {
@@ -198,7 +180,6 @@ export default {
       this.currentQuestionNo = index
       this.currentAnswer = this.answers[index] || 0
     },
-
   }
 }
 </script>

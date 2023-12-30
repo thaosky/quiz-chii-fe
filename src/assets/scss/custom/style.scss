@@ -473,6 +473,7 @@ html, body {
   background: #459724;
   border: none;
   margin: auto;
+  cursor: pointer;
   min-width: 250px
 }
 
@@ -487,6 +488,7 @@ html, body {
   width: 250px;
   color: #fff;
   border: none;
+  cursor: pointer;
 }
 
 .btn-submit-success:active, .btn-submit-white:active {
@@ -515,6 +517,7 @@ html, body {
   width: 250px;
   color: #000;
   border: none;
+  cursor: pointer;
 }
 
 .bg-answer-item {
@@ -1020,4 +1023,22 @@ _:-ms-fullscreen, :root .navbar-mochimochi img {
   font-size: 17px;
   font-weight: 500;
   line-height: 28px;
+}
+
+.div-submit-success-2 {
+  position: relative;
+  width: 250px;
+  height: 50px;
+  border-radius: 50px;
+  background: #459724;
+  border: none;
+  margin: auto;
+  min-width: 250px;
+  cursor: pointer;
+}
+.td-ellipsis, .td-ellipsis * {
+  max-width: 250px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }

@@ -201,6 +201,7 @@ export default {
       this.addQuestionModal.selectingTagId = null
       this.addQuestionModal.questions = []
       this.addQuestionModal.selectingQuestionIds = this.addQuestionModal.selectedQuestionIds
+      this.getQuestionsForModal()
     },
     discardModalChanges () {
       this.addQuestionModal.show = false
@@ -263,7 +264,7 @@ export default {
     },
     async getQuestionsForModal () {
       let url = 'http://localhost:8080/quiz/api/questions?pageSize=100000&pageNo=0'
-      if (!this.addQuestionModal.selectingTagId) {
+      if (this.addQuestionModal.selectingTagId) {
         url += '&tagId=' + this.addQuestionModal.selectingTagId
       }
       await axios.get( url)

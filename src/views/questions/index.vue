@@ -28,11 +28,14 @@
                 </thead>
                 <tbody>
                 <tr v-for="question in questions" :key="question.id">
-                  <td :title="question.content" data-toggle="tooltip" v-html="question.content">
+                  <td :title="stripHtmlTags(question.content)" data-toggle="tooltip" class="td-ellipsis"
+                      v-html="question.content">
                   </td>
-                  <td :title="question.question" data-toggle="tooltip" v-html="question.question">
+                  <td :title="stripHtmlTags(question.question)" data-toggle="tooltip" class="td-ellipsis"
+                      v-html="question.question">
                   </td>
-                  <td v-if="store.isAdmin()" v-html="convertAnswer(question)"></td>
+                  <td v-if="store.isAdmin()" :title="stripHtmlTags(question.question)" data-toggle="tooltip"
+                      class="td-ellipsis" v-html="convertAnswer(question)"></td>
                   <td>
                     <span v-for="tag in question.tagList" :key="tag.id" class="badge badge-primary">{{
                         tag.name
@@ -533,6 +536,10 @@ export default {
       this.updateModal.answer4 = ''
       this.updateModal.correctAnswer = ''
       this.updateModal.selectedTags = []
+    },
+    stripHtmlTags (str) {
+      let doc = new DOMParser().parseFromString(str, 'text/html');
+      return doc.body.textContent || "";
     },
   },
   watch: {

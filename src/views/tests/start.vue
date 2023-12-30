@@ -19,17 +19,17 @@
         <div class="col-6 _col-2 main-center" style="padding-bottom: 10px; min-height: 616px;">
           <div class="div-review" style="">
             <div class="row div_process" style="margin: 0; padding: 30px 0 10px">
-              <div class="col-2 text-center">
-                <img src="https://learn.mochidemy.com/svg/close_game.svg" style="width: 25px; cursor: pointer"
-                     @click="endTestEarly">
-              </div>
-              <div class="col-9">
+              <div class="col-9 offset-1">
                 <div class="process_bar" style="">
                   <div id="process-element" :style="{'width': this.progress + '%'}" class="process-element"
                        data-content="5">
                     <img alt="" src="img/theme/quyt.png">
                   </div>
                 </div>
+              </div>
+              <div class="col-2 text-center">
+                <img src="https://learn.mochidemy.com/svg/close_game.svg" style="width: 25px; cursor: pointer"
+                     @click="endTestEarly">
               </div>
             </div>
 
@@ -127,6 +127,36 @@
         </div>
       </div>
     </div>
+    <div class="modal-cover position-a w-100" style="position: fixed;" :style="{'display': endEarlyModalShow ? 'block' : 'none'}">
+      <div id="popupReview" class="popup-modal bg-white text-center" style="">
+        <div class="w-100 text-center popup-modal-image position-a" style="z-index: -1">
+          <img alt="image popup" src="https://learn.mochidemy.com/image/ea34698fbeae819618073bb7e0298139.png">
+        </div>
+        <div id="close-popup" class="position-a close-popup-modal">
+          <img alt="close" src="https://learn.mochidemy.com/svg/close.svg">
+        </div>
+        <div class="popup-modal-content"
+             style="background: #fff; border-radius: 20px; margin-top: 20px;">
+          <p style="font-weight: bold; font-size: 24px">
+            Bạn có chắc chắn muốn thoát ? Kết quả của bạn sẽ không được lưu lại
+          </p>
+          <div class="w-100 text-center">
+            <div class="div-submit-success-2">
+              <div class="btn-submit-success" @click="endEarlyModalShow = false">
+                TIẾP TỤC LÀM
+              </div>
+            </div>
+          </div>
+          <div class="w-100 text-center mt-3">
+            <div class="div-submit-white">
+              <div class="btn-submit-white" @click="$router.push('/tests')">
+                THOÁT
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -150,6 +180,7 @@ export default {
       passedTime: 0,
       interval: null,
       testName: '',
+      endEarlyModalShow: false,
     }
   },
   computed: {
@@ -188,14 +219,7 @@ export default {
   },
   methods: {
     endTestEarly () {
-      this.store.confirmModal = {
-        show: true,
-        title: 'Bạn chưa hoàn thành bài thi',
-        content: 'Bạn có chắc chắn muốn thoát? Các câu trả lời sẽ không được lưu lại.',
-        onConfirm: () => {
-          this.$router.push('/tests')
-        },
-      }
+      this.endEarlyModalShow = true
     },
     async getQuestions () {
       axios.get('http://localhost:8080/quiz/api/tests/' + this.$route.params.id,
