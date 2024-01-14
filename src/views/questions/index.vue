@@ -6,36 +6,49 @@
           Danh sách câu hỏi
         </Title>
         <section class="section section-lg pt-lg-0 w-100" style="margin-top: 200px">
-          <div class="container">
+          <div class="container-lg mx-auto">
             <div class="d-flex justify-content-center my-3">
               <SearchCustom :tags="tagList" @submit="searchByTag"></SearchCustom>
             </div>
             <div v-if="store.isAdmin()" class="row mb-3" style="justify-content: end">
               <button class="btn btn-success" @click="createModal.show = true">Thêm câu hỏi</button>
+              <label class="btn btn-success mb-0" for="uploadFile">Upload file</label>
+              <input id="uploadFile" accept=".xlsx" style="display: none" type="file" @change="onFileChange">
+              <button class="btn btn-danger" @click="deleteModal.show = true">Xoá</button>
             </div>
             <div class="row justify-content-center bg-white">
               <table v-if="questions.length" class="table table-striped">
                 <thead>
                 <tr>
+                  <th scope="col" style="width: 45px">
+                    <input :checked="selectedQuestions.length === questions.length" type="checkbox"
+                           @change="selectAllQuestions">
+                  </th>
                   <th scope="col">Nội dung</th>
                   <th scope="col">Câu hỏi</th>
-                  <th v-if="store.isAdmin()" scope="col" style="min-width: 60px">
+                  <th v-if="store.isAdmin()" scope="col" style="width: 90px">
                     Đáp án
                   </th>
+                  <th scope="col" style="min-width: 130px">Giải thích</th>
                   <th scope="col" style="min-width: 130px">Tags</th>
-                  <th scope="col" style="min-width: 130px"></th>
+                  <th scope="col" style="width: 135px"></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr v-for="question in questions" :key="question.id">
-                  <td :title="stripHtmlTags(question.content)" data-toggle="tooltip" class="td-ellipsis"
+                  <td>
+                    <input v-model="selectedQuestions" :value="question.id" name="question" type="checkbox">
+                  </td>
+                  <td :title="stripHtmlTags(question.content)" class="td-ellipsis" data-toggle="tooltip"
                       v-html="question.content">
                   </td>
-                  <td :title="stripHtmlTags(question.question)" data-toggle="tooltip" class="td-ellipsis"
+                  <td :title="stripHtmlTags(question.question)" class="td-ellipsis" data-toggle="tooltip"
                       v-html="question.question">
                   </td>
-                  <td v-if="store.isAdmin()" :title="stripHtmlTags(question.question)" data-toggle="tooltip"
-                      class="td-ellipsis" v-html="convertAnswer(question)"></td>
+                  <td v-if="store.isAdmin()" :title="stripHtmlTags(question.question)">{{ convertAnswer(question) }}</td>
+                  <td :title="stripHtmlTags(question.explanation)" class="td-ellipsis" data-toggle="tooltip"
+                      v-html="question.explanation">
+                  </td>
                   <td>
                     <span v-for="tag in question.tagList" :key="tag.id" class="badge badge-primary">{{
                         tag.name
@@ -51,7 +64,6 @@
                           class="btn btn-sm btn-primary"
                           @click="showEditQuestionModal(question)">Sửa
                       </button>
-                      <button class="btn btn-sm btn-danger" @click="showDeleteQuestionModal(question)">Xóa</button>
                     </template>
                   </td>
                 </tr>
@@ -110,6 +122,10 @@
               </div>
               <div class="form-row">
                 <div class="form-group col-md-6">
+                  <label for="correctAnswer">Giải thích</label>
+                  <wysiwyg v-model="createModal.explanation" class="form-control" required style="min-height: 150px;"/>
+                </div>
+                <div class="form-group col-md-6">
                   <label for="correctAnswer">Đáp án đúng</label>
                   <select v-model="createModal.correctAnswer" class="form-control" required>
                     <option value="1">A</option>
@@ -163,7 +179,7 @@
             <button v-else class="btn btn-dark" disabled type="button">Lưu</button>
           </template>
         </modal>
-        <modal :show="updateModal.show" modal-classes="modal-xl" @close="updateModal.show = false" >
+        <modal :show="updateModal.show" modal-classes="modal-xl" @close="updateModal.show = false">
           <template v-slot:header>
             <h4>Thêm câu hỏi</h4>
           </template>
@@ -202,6 +218,10 @@
                 </div>
               </div>
               <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="correctAnswer">Giải thích</label>
+                  <wysiwyg v-model="updateModal.explanation" class="form-control" required style="min-height: 150px;"/>
+                </div>
                 <div class="form-group col-md-6">
                   <label for="correctAnswer">Đáp án đúng</label>
                   <select v-model="updateModal.correctAnswer" class="form-control" required>
@@ -261,11 +281,11 @@
             <h4>Xoá câu hỏi</h4>
           </template>
           <template>
-            <p>Bạn có chắc chắn muốn xoá câu hỏi này?</p>
+            <p>Bạn có chắc chắn muốn xoá các câu hỏi này?</p>
           </template>
           <template v-slot:footer>
             <button class="btn btn-secondary" type="button" @click="deleteModal.show = false">Đóng</button>
-            <button class="btn btn-danger" type="button" @click="deleteQuestion">Xoá</button>
+            <button class="btn btn-danger" type="button" @click="deleteQuestions">Xoá</button>
           </template>
         </modal>
       </div>
@@ -275,15 +295,15 @@
 
 <script>
 import axios from 'axios'
-import { store } from '@/store'
+import {store} from '@/store'
 import SearchCustom from '@/components/SearchCustom.vue'
 import Modal from '@/components/Modal.vue'
-import { BFormSelect, BFormTag, BFormTags } from 'bootstrap-vue'
+import {BFormSelect, BFormTag, BFormTags} from 'bootstrap-vue'
 
 export default {
   name: 'questions',
-  components: { BFormTags, BFormSelect, BFormTag, Modal, SearchCustom },
-  data () {
+  components: {BFormTags, BFormSelect, BFormTag, Modal, SearchCustom},
+  data() {
     return {
       store,
       questions: [],
@@ -296,6 +316,7 @@ export default {
       totalPage: 0,
       total: 0,
       tagList: [],
+      selectedQuestions: [],
       createModal: {
         show: false,
         content: '',
@@ -304,9 +325,11 @@ export default {
         answer2: '',
         answer3: '',
         answer4: '',
+        explanation: '',
         correctAnswer: '',
         selectedTags: [],
       },
+      uploadFile: null,
       updateModal: {
         show: false,
         id: '',
@@ -316,6 +339,7 @@ export default {
         answer2: '',
         answer3: '',
         answer4: '',
+        explanation: '',
         correctAnswer: '',
         selectedTags: [],
       },
@@ -326,27 +350,27 @@ export default {
     }
   },
   computed: {
-    tagNameList () {
+    tagNameList() {
       return this.tagList.map(tag => tag.name)
     },
-    availableCreateTags () {
+    availableCreateTags() {
       return this.tagNameList.filter(tag => !this.createModal.selectedTags.includes(tag))
     },
-    createFormValid () {
+    createFormValid() {
       return this.createModal.content && this.createModal.question && this.createModal.answer1 &&
           this.createModal.answer2 && this.createModal.answer3 && this.createModal.answer4 &&
           this.createModal.correctAnswer && this.createModal.selectedTags.length > 0
     },
-    availableUpdateTags () {
+    availableUpdateTags() {
       return this.tagNameList.filter(tag => !this.updateModal.selectedTags.includes(tag))
     },
-    updateFormValid () {
+    updateFormValid() {
       return this.updateModal.content && this.updateModal.question && this.updateModal.answer1 &&
           this.updateModal.answer2 && this.updateModal.answer3 && this.updateModal.answer4 &&
           this.updateModal.correctAnswer && this.updateModal.selectedTags.length > 0
     },
   },
-  async created () {
+  async created() {
     await axios.get(`http://localhost:8080/quiz/api/questions?pageNo=${this.pageNo - 1}&pageSize=${this.pageSize}&sortDir=${this.sortDir}&sortName=${this.sortName}`)
         .then(res => {
           this.questions = res.data.data.items
@@ -365,20 +389,55 @@ export default {
         })
   },
   methods: {
-    convertAnswer (question) {
-      if (question.correctAnswer) {
-        question.correctAnswer = parseInt(question.correctAnswer)
+    selectAllQuestions() {
+      if (this.selectedQuestions.length === this.questions.length) {
+        this.selectedQuestions = []
       } else {
-        return ''
+        this.selectedQuestions = this.questions.map(question => question.id)
       }
-      return question['answer' + question.correctAnswer]
     },
-    async searchByTag (tagId, keyword) {
+    convertAnswer(question) {
+      switch (question.correctAnswer) {
+        case 1:
+          return 'A'
+        case 2:
+          return 'B'
+        case 3:
+          return 'C'
+        case 4:
+          return 'D'
+        default:
+          return ''
+      }
+    },
+    onFileChange(e) {
+      this.uploadFile = e.target.files[0]
+      this.uploadFileToServer()
+    },
+    uploadFileToServer() {
+      const formData = new FormData()
+      formData.append('file', this.uploadFile)
+      axios.post('http://localhost:8080/quiz/api/file/upload-excel', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${store.token}`
+        }
+      })
+          .then(res => {
+            store.displaySuccess('Upload file thành công')
+            this.uploadFile = null
+            this.getQuestions()
+          })
+          .catch(err => {
+            store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
+          })
+    },
+    async searchByTag(tagId, keyword) {
       this.tagId = tagId
       this.keyword = keyword
       await this.getQuestions()
     },
-    async getQuestions () {
+    async getQuestions() {
       let url = `http://localhost:8080/quiz/api/questions?pageNo=${this.pageNo - 1}&pageSize=${this.pageSize}&sortDir=${this.sortDir}&sortName=${this.sortName}`
       if (this.tagId) {
         url += `&tagId=${this.tagId}`
@@ -396,28 +455,25 @@ export default {
             store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
           })
     },
-    showDeleteQuestionModal (question) {
-      this.deleteModal.id = question.id
-      this.deleteModal.show = true
-    },
-    async deleteQuestion () {
-      await axios.delete(`http://localhost:8080/quiz/api/questions/${this.deleteModal.id}`, {
+    async deleteQuestions() {
+      await axios.delete(`http://localhost:8080/quiz/api/questions`, {
         headers: {
           Authorization: `Bearer ${store.token}`
+        },
+        data: {
+          ids: this.selectedQuestions
         }
+      }).then(res => {
+        if (res.status === 200 || res.status === 204) {
+          store.displaySuccess('Xóa câu hỏi thành công!')
+          this.deleteModal.show = false
+          this.getQuestions()
+        }
+      }).catch(err => {
+        store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
       })
-          .then(res => {
-            if (res.status === 200 || res.status === 204) {
-              store.displaySuccess('Xóa câu hỏi thành công!')
-              this.deleteModal.show = false
-              this.getQuestions()
-            }
-          })
-          .catch(err => {
-            store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
-          })
     },
-    async storeQuestion () {
+    async storeQuestion() {
       if (!this.createFormValid) {
         alert('Vui lòng nhập đầy đủ thông tin')
         return
@@ -425,7 +481,7 @@ export default {
       const tagIds = []
       for (let tagName of this.createModal.selectedTags) {
         const tag = this.tagList.find(tag => tag.name === tagName)
-        tagIds.push({ id: tag.id })
+        tagIds.push({id: tag.id})
       }
 
       await axios.post('http://localhost:8080/quiz/api/questions',
@@ -437,7 +493,8 @@ export default {
             answer3: this.createModal.answer3,
             answer4: this.createModal.answer4,
             correctAnswer: parseInt(this.createModal.correctAnswer),
-            tagList: tagIds
+            tagList: tagIds,
+            explanation: this.createModal.explanation,
           },
           {
             headers: {
@@ -454,7 +511,7 @@ export default {
             store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
           })
     },
-    resetCreateModal () {
+    resetCreateModal() {
       this.createModal.show = false
       this.createModal.content = ''
       this.createModal.question = ''
@@ -463,9 +520,10 @@ export default {
       this.createModal.answer3 = ''
       this.createModal.answer4 = ''
       this.createModal.correctAnswer = ''
+      this.createModal.explanation = ''
       this.createModal.selectedTags = []
     },
-    showEditQuestionModal (question) {
+    showEditQuestionModal(question) {
       this.updateModal.id = question.id
       this.updateModal.content = question.content
       this.updateModal.question = question.question
@@ -475,9 +533,10 @@ export default {
       this.updateModal.answer4 = question.answer4
       this.updateModal.correctAnswer = question.correctAnswer
       this.updateModal.selectedTags = question.tagList.map(tag => tag.name)
+      this.updateModal.explanation = question.explanation
       this.updateModal.show = true
     },
-    showCopyQuestionModal (question) {
+    showCopyQuestionModal(question) {
       this.createModal.content = question.content
       this.createModal.question = question.question
       this.createModal.answer1 = question.answer1
@@ -486,9 +545,10 @@ export default {
       this.createModal.answer4 = question.answer4
       this.createModal.correctAnswer = question.correctAnswer
       this.createModal.selectedTags = question.tagList.map(tag => tag.name)
+      this.createModal.explanation = question.explanation
       this.createModal.show = true
     },
-    async updateQuestion () {
+    async updateQuestion() {
       if (!this.updateFormValid) {
         alert('Vui lòng nhập đầy đủ thông tin')
         return
@@ -496,7 +556,7 @@ export default {
       const tagIds = []
       for (let tagName of this.updateModal.selectedTags) {
         const tag = this.tagList.find(tag => tag.name === tagName)
-        tagIds.push({ id: tag.id })
+        tagIds.push({id: tag.id})
       }
 
       await axios.put('http://localhost:8080/quiz/api/questions/' + this.updateModal.id,
@@ -509,6 +569,7 @@ export default {
             answer3: this.updateModal.answer3,
             answer4: this.updateModal.answer4,
             correctAnswer: parseInt(this.updateModal.correctAnswer),
+            explanation: this.updateModal.explanation,
             tagList: tagIds
           },
           {
@@ -526,7 +587,7 @@ export default {
             store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
           })
     },
-    resetUpdateModal () {
+    resetUpdateModal() {
       this.updateModal.show = false
       this.updateModal.content = ''
       this.updateModal.question = ''
@@ -535,9 +596,10 @@ export default {
       this.updateModal.answer3 = ''
       this.updateModal.answer4 = ''
       this.updateModal.correctAnswer = ''
+      this.updateModal.explanation = ''
       this.updateModal.selectedTags = []
     },
-    stripHtmlTags (str) {
+    stripHtmlTags(str) {
       let doc = new DOMParser().parseFromString(str, 'text/html');
       return doc.body.textContent || "";
     },

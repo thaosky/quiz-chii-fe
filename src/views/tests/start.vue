@@ -132,7 +132,7 @@
         <div class="w-100 text-center popup-modal-image position-a" style="z-index: -1">
           <img alt="image popup" src="https://learn.mochidemy.com/image/ea34698fbeae819618073bb7e0298139.png">
         </div>
-        <div id="close-popup" class="position-a close-popup-modal">
+        <div id="close-popup" class="position-a close-popup-modal" @click="endEarlyModalShow = false">
           <img alt="close" src="https://learn.mochidemy.com/svg/close.svg">
         </div>
         <div class="popup-modal-content"
@@ -222,7 +222,7 @@ export default {
       this.endEarlyModalShow = true
     },
     async getQuestions () {
-      axios.get('http://localhost:8080/quiz/api/tests/' + this.$route.params.id,
+      axios.get('http://localhost:8080/quiz/api/tests/admin/' + this.$route.params.id,
           {
             headers: {
               'Authorization': `Bearer ${store.token}`
@@ -266,7 +266,7 @@ export default {
         this.store.confirmModal = {
           show: true,
           title: 'Bạn chưa hoàn thành bài thi',
-          content: 'Bạn vẫn còn câu hỏi chưa trả lời. Bạn có chắc chắn muốn nộp bài? Các câu chưa trả lời sẽ được tính là sai.',
+          content: 'Bạn vẫn còn câu hỏi chưa trả lời. Bạn có chắc chắn muốn nộp bài? Kết quả của bạn sẽ không được lưu lại.',
           onConfirm: this.submit,
         }
       } else {
@@ -311,6 +311,17 @@ export default {
   beforeDestroy () {
     clearInterval(this.interval)
     window.onbeforeunload = null
+  },
+  beforeRouteUpdate (to, from, next) {
+    console.log(to.path)
+    if (to.path !== '/tests/start/' + this.$route.params.id) {
+      const confirm = window.confirm('Are you sure you want to leave? Your progress will be lost.')
+      if (confirm) {
+        next()
+      } else {
+        next(false)
+      }
+    }
   }
 }
 </script>
