@@ -61,7 +61,17 @@
                   <div class="menu-item-box text-center w-100">
                     <img src="img/theme/profile_active.png" alt="">
                     <p class="mb-0">
-                      Quản lý người dùng
+                      Tài khoản
+                    </p>
+                  </div>
+                </router-link>
+              </div>
+              <div class="col p-0 text-center menu-item" :class="{active: $route.path.includes('achievements')}">
+                <router-link to="/achievements">
+                  <div class="menu-item-box text-center w-100">
+                    <img src="img/theme/achievement.png" alt="">
+                    <p class="mb-0">
+                      Thành tựu
                     </p>
                   </div>
                 </router-link>
