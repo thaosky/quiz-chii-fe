@@ -123,7 +123,7 @@
             <form action="">
               <div class="form-group">
                 <label for="username">Tên đăng nhập</label>
-                <div class=""> {{ updateModal.username }}</div>
+                <div class="" id="username"> {{ updateModal.username }}</div>
               </div>
               <div class="form-group">
                 <label :class="{'text-danger': updateModal.errors.name}" for="name">Tên hiển thị</label>

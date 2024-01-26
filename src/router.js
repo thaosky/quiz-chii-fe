@@ -116,6 +116,15 @@ export default new Router({
       }
     },
     {
+      path: '/achievements',
+      name: 'achievements',
+      components: {
+        header: AdminHeader,
+        default: () => import('@/views/achievements/index.vue'),
+        footer: AdminFooter
+      }
+    },
+    {
       path: '/users/profile',
       name: 'user-profile',
       components: {
