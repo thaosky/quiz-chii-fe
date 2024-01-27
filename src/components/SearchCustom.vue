@@ -120,6 +120,7 @@ export default {
   left: 0;
   width: 100%;
   border-radius: 5px;
+  z-index: 1;
 }
 
 .search__image {

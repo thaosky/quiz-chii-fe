@@ -222,7 +222,7 @@ export default {
       this.endEarlyModalShow = true
     },
     async getQuestions () {
-      axios.get('http://localhost:8080/quiz/api/tests/admin/' + this.$route.params.id,
+      axios.get(this.$appConfig.apiBaseUrl + '/quiz/api/tests/' + this.$route.params.id,
           {
             headers: {
               'Authorization': `Bearer ${store.token}`
@@ -289,7 +289,7 @@ export default {
           }
         })
       }
-      axios.post('http://localhost:8080/quiz/api/results', data, {
+      axios.post(this.$appConfig.apiBaseUrl + '/quiz/api/results', data, {
         headers: {
           'Authorization': `Bearer ${this.store.token}`
         }

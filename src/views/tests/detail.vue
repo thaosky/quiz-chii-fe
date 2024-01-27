@@ -158,7 +158,7 @@ export default {
       this.$router.push('/tests')
     },
     async getQuestions () {
-      await axios.get('http://localhost:8080/quiz/api/tests/' + this.$route.params.id)
+      await axios.get(this.$appConfig.apiBaseUrl + '/quiz/api/tests/view/' + this.$route.params.id)
           .then(res => {
             this.questions = res.data.data.questionList
             this.totalQuestions = res.data.data.questionList.length

@@ -183,7 +183,7 @@ export default {
   async created () {
     await this.getTags()
     await this.getQuestions()
-    await axios.get('http://localhost:8080/quiz/api/tests/' + this.$route.params.id)
+    await axios.get(this.$appConfig.apiBaseUrl + '/quiz/api/tests/' + this.$route.params.id)
         .then(response => {
           this.name = response.data.data.name
           this.description = response.data.data.description
@@ -234,7 +234,7 @@ export default {
         tagIds.push({ id: tag.id })
       }
 
-      await axios.put('http://localhost:8080/quiz/api/tests/' + this.$route.params.id, {
+      await axios.put(this.$appConfig.apiBaseUrl + '/quiz/api/tests/' + this.$route.params.id, {
         id: this.$route.params.id,
         name: this.name,
         description: this.description,
@@ -258,7 +258,7 @@ export default {
         this.addQuestionModal.questions = []
         return
       }
-      await axios.get('http://localhost:8080/quiz/api/questions?pageSize=100000&pageNo=0&tagId=' + this.addQuestionModal.selectingTagId)
+      await axios.get(this.$appConfig.apiBaseUrl + '/quiz/api/questions?pageSize=100000&pageNo=0&tagId=' + this.addQuestionModal.selectingTagId)
           .then(res => {
             this.addQuestionModal.questions = res.data.data.items
           })
@@ -267,7 +267,7 @@ export default {
           })
     },
     async getTags () {
-      await axios.get('http://localhost:8080/quiz/api/tags?pageSize=100000&pageNo=0')
+      await axios.get(this.$appConfig.apiBaseUrl + '/quiz/api/tags?pageSize=100000&pageNo=0')
           .then(res => {
             if (res.data.data.items.length === 0) {
               return
@@ -279,7 +279,7 @@ export default {
           })
     },
     async getQuestions () {
-      await axios.get('http://localhost:8080/quiz/api/questions?pageSize=100000&pageNo=0')
+      await axios.get(this.$appConfig.apiBaseUrl + '/quiz/api/questions?pageSize=100000&pageNo=0')
           .then(res => {
             this.questions = res.data.data.items
           })

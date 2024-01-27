@@ -17,59 +17,64 @@
               <button class="btn btn-danger" @click="deleteModal.show = true">Xoá</button>
             </div>
             <div class="row justify-content-center bg-white">
-              <table v-if="questions.length" class="table table-striped">
-                <thead>
-                <tr>
-                  <th scope="col" style="width: 45px">
-                    <input :checked="selectedQuestions.length === questions.length" type="checkbox"
-                           @change="selectAllQuestions">
-                  </th>
-                  <th scope="col">Nội dung</th>
-                  <th scope="col">Câu hỏi</th>
-                  <th v-if="store.isAdmin()" scope="col" style="width: 90px">
-                    Đáp án
-                  </th>
-                  <th scope="col" style="min-width: 130px">Giải thích</th>
-                  <th scope="col" style="min-width: 130px">Tags</th>
-                  <th scope="col" style="width: 135px"></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="question in questions" :key="question.id">
-                  <td>
-                    <input v-model="selectedQuestions" :value="question.id" name="question" type="checkbox">
-                  </td>
-                  <td :title="stripHtmlTags(question.content)" class="td-ellipsis" data-toggle="tooltip"
-                      v-html="question.content">
-                  </td>
-                  <td :title="stripHtmlTags(question.question)" class="td-ellipsis" data-toggle="tooltip"
-                      v-html="question.question">
-                  </td>
-                  <td v-if="store.isAdmin()" :title="stripHtmlTags(question.question)">{{ convertAnswer(question) }}</td>
-                  <td :title="stripHtmlTags(question.explanation)" class="td-ellipsis" data-toggle="tooltip"
-                      v-html="question.explanation">
-                  </td>
-                  <td>
+              <a-spin :spinning="loading" class="w-100" size="large">
+                <table v-if="questions.length" class="table table-striped">
+                  <thead>
+                  <tr>
+                    <th scope="col" style="width: 45px">
+                      <input :checked="selectedQuestions.length === questions.length" type="checkbox"
+                             @change="selectAllQuestions">
+                    </th>
+                    <th scope="col">Nội dung</th>
+                    <th scope="col">Câu hỏi</th>
+                    <th v-if="store.isAdmin()" scope="col" style="width: 90px">
+                      Đáp án
+                    </th>
+                    <th scope="col" style="min-width: 130px">Giải thích</th>
+                    <th scope="col" style="min-width: 130px">Tags</th>
+                    <th scope="col" style="width: 135px"></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr v-for="question in questions" :key="question.id">
+                    <td>
+                      <input v-model="selectedQuestions" :value="question.id" name="question" type="checkbox">
+                    </td>
+                    <td :title="stripHtmlTags(question.content)" class="td-ellipsis" data-toggle="tooltip"
+                        v-html="question.content">
+                    </td>
+                    <td :title="stripHtmlTags(question.question)" class="td-ellipsis" data-toggle="tooltip"
+                        v-html="question.question">
+                    </td>
+                    <td v-if="store.isAdmin()" :title="stripHtmlTags(question.question)">{{
+                        convertAnswer(question)
+                      }}
+                    </td>
+                    <td :title="stripHtmlTags(question.explanation)" class="td-ellipsis" data-toggle="tooltip"
+                        v-html="question.explanation">
+                    </td>
+                    <td>
                     <span v-for="tag in question.tagList" :key="tag.id" class="badge badge-primary">{{
                         tag.name
                       }}</span>
-                  </td>
-                  <td>
-                    <template v-if="store.isAdmin()">
-                      <button
-                          class="btn btn-sm btn-success"
-                          @click="showCopyQuestionModal(question)">COPY
-                      </button>
-                      <button
-                          class="btn btn-sm btn-primary"
-                          @click="showEditQuestionModal(question)">Sửa
-                      </button>
-                    </template>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-              <SearchNoData v-else></SearchNoData>
+                    </td>
+                    <td>
+                      <template v-if="store.isAdmin()">
+                        <button
+                            class="btn btn-sm btn-success"
+                            @click="showCopyQuestionModal(question)">COPY
+                        </button>
+                        <button
+                            class="btn btn-sm btn-primary"
+                            @click="showEditQuestionModal(question)">Sửa
+                        </button>
+                      </template>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+                <SearchNoData v-else></SearchNoData>
+              </a-spin>
               <div v-if="totalPage === 0" class="text-center">
                 <div class="spinner-border text-primary" role="status">
                   <span class="sr-only">Loading...</span>
@@ -347,6 +352,7 @@ export default {
         show: false,
         id: '',
       },
+      loading: false,
     }
   },
   computed: {
@@ -371,16 +377,8 @@ export default {
     },
   },
   async created() {
-    await axios.get(`http://localhost:8080/quiz/api/questions?pageNo=${this.pageNo - 1}&pageSize=${this.pageSize}&sortDir=${this.sortDir}&sortName=${this.sortName}`)
-        .then(res => {
-          this.questions = res.data.data.items
-          this.totalPage = res.data.data.totalPage
-          this.total = res.data.data.totalElements
-        })
-        .catch(err => {
-          store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
-        })
-    await axios.get('http://localhost:8080/quiz/api/tags?pageSize=100000&pageNo=0')
+    await this.getQuestions()
+    await axios.get(this.$appConfig.apiBaseUrl + '/quiz/api/tags?pageSize=100000&pageNo=0')
         .then(res => {
           this.tagList = res.data.data.items
         })
@@ -417,7 +415,7 @@ export default {
     uploadFileToServer() {
       const formData = new FormData()
       formData.append('file', this.uploadFile)
-      axios.post('http://localhost:8080/quiz/api/file/upload-excel', formData, {
+      axios.post(this.$appConfig.apiBaseUrl + '/quiz/api/file/upload-excel', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${store.token}`
@@ -445,6 +443,7 @@ export default {
       if (this.keyword) {
         url += `&content=${this.keyword}`
       }
+      this.loading = true
       await axios.get(url)
           .then(res => {
             this.questions = res.data.data.items
@@ -453,6 +452,9 @@ export default {
           })
           .catch(err => {
             store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
+          })
+          .finally(() => {
+            this.loading = false
           })
     },
     async deleteQuestions() {
@@ -484,7 +486,7 @@ export default {
         tagIds.push({id: tag.id})
       }
 
-      await axios.post('http://localhost:8080/quiz/api/questions',
+      await axios.post(this.$appConfig.apiBaseUrl + '/quiz/api/questions',
           {
             content: this.createModal.content,
             question: this.createModal.question,
@@ -559,7 +561,7 @@ export default {
         tagIds.push({id: tag.id})
       }
 
-      await axios.put('http://localhost:8080/quiz/api/questions/' + this.updateModal.id,
+      await axios.put(this.$appConfig.apiBaseUrl + '/quiz/api/questions/' + this.updateModal.id,
           {
             id: this.updateModal.id,
             content: this.updateModal.content,

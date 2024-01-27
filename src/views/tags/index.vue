@@ -11,33 +11,35 @@
               <button class="btn btn-success" @click="showCreateModal">Thêm tag</button>
             </div>
             <div class="row justify-content-center bg-white">
-              <table v-if="tags.length" class="table table-striped">
-                <thead>
-                <tr>
-                  <th scope="col">Tên</th>
-                  <th scope="col">Mô tả</th>
-                  <th v-if="store.isAdmin()" scope="col"
-                      style="width: 170px"></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="tag in tags" :key="tag.id">
-                  <td :title="tag.name" data-toggle="tooltip">
-                    {{ shortenContent(tag.name) }}
-                  </td>
-                  <td :title="tag.description" data-toggle="tooltip">
-                    {{ shortenContent(tag.description) }}
-                  </td>
-                  <td v-if="store.isAdmin()">
-                    <button class="btn btn-sm btn-primary" @click="showEditModal(tag)">
-                      Sửa
-                    </button>
-                    <button class="btn btn-sm btn-danger" @click="showDeleteTagModal(tag.id)">Xóa</button>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-              <SearchNoData v-else></SearchNoData>
+              <a-spin :spinning="loading" class="w-100" size="large">
+                <table v-if="tags.length" class="table table-striped">
+                  <thead>
+                  <tr>
+                    <th scope="col">Tên</th>
+                    <th scope="col">Mô tả</th>
+                    <th v-if="store.isAdmin()" scope="col"
+                        style="width: 170px"></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr v-for="tag in tags" :key="tag.id">
+                    <td :title="tag.name" data-toggle="tooltip">
+                      {{ shortenContent(tag.name) }}
+                    </td>
+                    <td :title="tag.description" data-toggle="tooltip">
+                      {{ shortenContent(tag.description) }}
+                    </td>
+                    <td v-if="store.isAdmin()">
+                      <button class="btn btn-sm btn-primary" @click="showEditModal(tag)">
+                        Sửa
+                      </button>
+                      <button class="btn btn-sm btn-danger" @click="showDeleteTagModal(tag.id)">Xóa</button>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+                <SearchNoData v-else></SearchNoData>
+              </a-spin>
               <div v-if="totalPage === 0" class="text-center">
                 <div class="spinner-border text-primary" role="status">
                   <span class="sr-only">Loading...</span>
@@ -150,6 +152,7 @@ export default {
         name: '',
         description: '',
       },
+      loading: false,
     }
   },
   async created () {
@@ -158,8 +161,8 @@ export default {
   methods: {
     shortenContent (content) {
       if (!content) return ''
-      if (content.length > 20) {
-        return content.substring(0, 20) + '...'
+      if (content.length > 100) {
+        return content.substring(0, 100) + '...'
       }
       return content
     },
@@ -168,6 +171,7 @@ export default {
       this.deleteModal.id = id
     },
     getTags () {
+      this.loading = true
       axios.get(`http://localhost:8080/quiz/api/tags?pageNo=${this.pageNo - 1}&pageSize=${this.pageSize}&sortDir=${this.sortDir}&sortName=${this.sortName}`)
           .then(res => {
             this.tags = res.data.data.items
@@ -176,6 +180,9 @@ export default {
           })
           .catch(err => {
             store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
+          })
+          .finally(() => {
+            this.loading = false
           })
     },
     resetCreateModal () {
@@ -187,7 +194,7 @@ export default {
       this.createModal.show = true
     },
     async createTag () {
-      await axios.post('http://localhost:8080/quiz/api/tags', {
+      await axios.post(this.$appConfig.apiBaseUrl + '/quiz/api/tags', {
         name: this.createModal.name,
         description: this.createModal.description
       }, {

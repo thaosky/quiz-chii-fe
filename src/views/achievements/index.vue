@@ -14,31 +14,33 @@
               <button class="btn btn-success" @click="createModal.show=true">Thêm thành tựu</button>
             </div>
             <div class="row justify-content-center bg-white">
-              <table v-if="users.length" class="table table-striped">
-                <thead>
-                <tr>
-                  <th scope="col">Username</th>
-                  <th scope="col">Tên người dùng</th>
-                  <th scope="col">Email</th>
-                  <th scope="col">Vai trò</th>
-                  <th scope="col">Trạng thái</th>
-                  <th scope="col"></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="user in users" :key="user.username">
-                  <td>{{ user.username }}</td>
-                  <td>{{ user.name }}</td>
-                  <td>{{ user.email }}</td>
-                  <td> {{ getRoles(user.role) }}</td>
-                  <td>{{ user.active ? 'Đang hoạt động' : 'Đã khóa' }}</td>
-                  <td>
-                    <button class="btn btn-sm btn-primary" @click="showUpdateModal(user)">Sửa</button>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-              <SearchNoData v-else></SearchNoData>
+              <a-spin :spinning="loading" class="w-100" size="large">
+                <table v-if="users.length" class="table table-striped">
+                  <thead>
+                  <tr>
+                    <th scope="col">Username</th>
+                    <th scope="col">Tên người dùng</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Vai trò</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col"></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr v-for="user in users" :key="user.username">
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td> {{ getRoles(user.role) }}</td>
+                    <td>{{ user.active ? 'Đang hoạt động' : 'Đã khóa' }}</td>
+                    <td>
+                      <button class="btn btn-sm btn-primary" @click="showUpdateModal(user)">Sửa</button>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+                <SearchNoData v-else></SearchNoData>
+              </a-spin>
               <div v-if="totalPage === 0" class="text-center">
                 <div class="spinner-border text-primary" role="status">
                   <span class="sr-only">Loading...</span>
@@ -233,7 +235,8 @@ export default {
           email: '',
           password: ''
         }
-      }
+      },
+      loading: false,
     }
   },
   async created () {
@@ -258,6 +261,7 @@ export default {
       if (this.keyword) {
         url += `&content=${this.keyword}`
       }
+      this.loading = true
       await axios.get(url, {
         headers: {
           'Authorization': `Bearer ${store.token}`
@@ -268,6 +272,8 @@ export default {
         this.total = res.data.data.totalElements
       }).catch(err => {
         store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
+      }).finally(() => {
+        this.loading = false
       })
     },
     validateForm (formData) {
@@ -313,7 +319,7 @@ export default {
     createUser () {
       if (!this.validateForm(this.createModal)) return
       const { username, name, email, password, role } = this.createModal
-      axios.post('http://localhost:8080/quiz/api/users', {
+      axios.post(this.$appConfig.apiBaseUrl + '/quiz/api/users', {
         username,
         name,
         email,

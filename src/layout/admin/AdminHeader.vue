@@ -18,7 +18,7 @@
             <div class="row menu">
               <div class="col p-0 text-center menu-item" :class="{active: $route.path.includes('tests')}">
                 <router-link to="/tests">
-                  <div class="menu-item-box text-center w-100">
+                  <div class="menu-item-box text-center w-100 text-dark">
                     <img src="img/theme/quiz.png" alt="">
                     <p class="mb-0">
                       Quiz
@@ -28,7 +28,7 @@
               </div>
               <div class="col p-0 text-center menu-item" :class="{active: $route.path.includes('questions')}">
                 <router-link to="/questions">
-                  <div class="menu-item-box text-center w-100">
+                  <div class="menu-item-box text-center w-100 text-dark">
                     <img src="img/theme/community.png" alt="">
                     <p class="mb-0">
                       Câu hỏi
@@ -38,7 +38,7 @@
               </div>
               <div class="col p-0 text-center menu-item" :class="{active: $route.path.includes('tags')}">
                 <router-link to="/tags">
-                  <div class="menu-item-box text-center w-100">
+                  <div class="menu-item-box text-center w-100 text-dark">
                     <img src="img/theme/book.png" alt="">
                     <p class="mb-0">
                       Tag
@@ -48,7 +48,7 @@
               </div>
               <div class="col p-0 text-center menu-item" :class="{active: $route.path.includes('statistics')}">
                 <router-link to="/statistics">
-                  <div class="menu-item-box text-center w-100">
+                  <div class="menu-item-box text-center w-100 text-dark">
                     <img src="img/theme/analysis.png" alt="">
                     <p class="mb-0">
                       Thống kê
@@ -58,7 +58,7 @@
               </div>
               <div class="col p-0 text-center menu-item" :class="{active: $route.path.includes('users')}">
                 <router-link to="/users">
-                  <div class="menu-item-box text-center w-100">
+                  <div class="menu-item-box text-center w-100 text-dark">
                     <img src="img/theme/profile_active.png" alt="">
                     <p class="mb-0">
                       Tài khoản
@@ -68,7 +68,7 @@
               </div>
               <div class="col p-0 text-center menu-item" :class="{active: $route.path.includes('achievements')}">
                 <router-link to="/achievements">
-                  <div class="menu-item-box text-center w-100">
+                  <div class="menu-item-box text-center w-100 text-dark">
                     <img src="img/theme/achievement.png" alt="">
                     <p class="mb-0">
                       Thành tựu

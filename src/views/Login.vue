@@ -83,7 +83,7 @@ export default {
   },
   methods: {
     async login () {
-      await axios.post('http://localhost:8080/quiz/auth/login', {
+      await axios.post(this.$appConfig.apiBaseUrl + '/quiz/auth/login', {
         username: this.username,
         password: this.password
       }).then(res => {

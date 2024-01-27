@@ -14,54 +14,56 @@
               <router-link class="btn btn-success" to="/tests/create">Thêm quiz</router-link>
             </div>
             <div class="row justify-content-center bg-white">
-              <table v-if="tests.length" class="table table-striped">
-                <thead>
-                <tr>
-                  <th scope="col">Tên quiz</th>
-                  <th scope="col">Mô tả</th>
-                  <th scope="col">Thời lượng</th>
-                  <th scope="col">Tags</th>
-                  <th scope="col"></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="test in tests" :key="test.id">
-                  <td :title="test.name" data-toggle="tooltip">
-                    {{ shortenContent(test.name) }}
-                  </td>
-                  <td :title="test.description" data-toggle="tooltip">
-                    {{ shortenContent(test.description) }}
-                  </td>
-                  <td :title="test.availableTime" data-toggle="tooltip">
-                    {{ shortenContent(test.availableTime) + ' phút' }}
-                  </td>
-                  <td>
-                    <span v-for="tag in test.tagList" :key="tag.id" class="badge badge-primary">{{ tag.name }}</span>
-                  </td>
-                  <td style="display: flex; justify-content: center">
-                    <router-link
-                        :to="{ name: 'tests.detail', params: { id: test.id } }"
-                        class="btn btn-sm btn-neutral">Xem
-                    </router-link>
-                    <template v-if="store.isLoggedIn()">
+              <a-spin :spinning="loading" class="w-100" size="large">
+                <table v-if="tests.length" class="table table-striped">
+                  <thead>
+                  <tr>
+                    <th scope="col">Tên quiz</th>
+                    <th scope="col">Mô tả</th>
+                    <th scope="col">Thời lượng</th>
+                    <th scope="col">Tags</th>
+                    <th scope="col"></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr v-for="test in tests" :key="test.id">
+                    <td :title="test.name" data-toggle="tooltip">
+                      {{ shortenContent(test.name) }}
+                    </td>
+                    <td :title="test.description" data-toggle="tooltip">
+                      {{ shortenContent(test.description) }}
+                    </td>
+                    <td :title="test.availableTime" data-toggle="tooltip">
+                      {{ shortenContent(test.availableTime) + ' phút' }}
+                    </td>
+                    <td>
+                      <span v-for="tag in test.tagList" :key="tag.id" class="badge badge-primary">{{ tag.name }}</span>
+                    </td>
+                    <td style="display: flex; justify-content: center">
                       <router-link
-                          :to="{ name: 'tests.start', params: { id: test.id } }"
-                          class="btn btn-sm btn-success">
-                        Thi
+                          :to="{ name: 'tests.detail', params: { id: test.id } }"
+                          class="btn btn-sm btn-neutral">Xem
                       </router-link>
-                      <template v-if="store.isAdmin()">
+                      <template v-if="store.isLoggedIn()">
                         <router-link
-                            :to="{ name: 'tests.edit', params: { id: test.id } }"
-                            class="btn btn-sm btn-primary">Sửa
+                            :to="{ name: 'tests.start', params: { id: test.id } }"
+                            class="btn btn-sm btn-success">
+                          Thi
                         </router-link>
-                        <button class="btn btn-sm btn-danger" @click="showDeleteModal(test)">Xóa</button>
+                        <template v-if="store.isAdmin()">
+                          <router-link
+                              :to="{ name: 'tests.edit', params: { id: test.id } }"
+                              class="btn btn-sm btn-primary">Sửa
+                          </router-link>
+                          <button class="btn btn-sm btn-danger" @click="showDeleteModal(test)">Xóa</button>
+                        </template>
                       </template>
-                    </template>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-              <SearchNoData v-else></SearchNoData>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+                <SearchNoData v-else></SearchNoData>
+              </a-spin>
               <div v-if="totalPage > 1">
                 <base-pagination v-model="pageNo" :page-count="totalPage" :per-page="pageSize"
                                  :total="total"></base-pagination>
@@ -114,11 +116,12 @@ export default {
         id: null,
       },
       tagList: [],
+      loading: false,
     }
   },
   async created () {
     this.getTests()
-    await axios.get('http://localhost:8080/quiz/api/tags?pageSize=100000&pageNo=0')
+    await axios.get(this.$appConfig.apiBaseUrl + '/quiz/api/tags?pageSize=100000&pageNo=0')
         .then(res => {
           this.tagList = res.data.data.items
         })
@@ -141,12 +144,15 @@ export default {
       if (this.keyword) {
         url += `&name=${this.keyword}`
       }
+      this.loading = true
       await axios.get(url).then(res => {
         this.tests = res.data.data.items
         this.totalPage = res.data.data.totalPage
         this.total = res.data.data.totalElements
       }).catch(err => {
         store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
+      }).finally(() => {
+        this.loading = false
       })
     },
     async searchByTag (tagId, keyword) {

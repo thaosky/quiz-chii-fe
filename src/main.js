@@ -18,10 +18,16 @@
 import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
+import "ant-design-vue/dist/antd.css";
 import Argon from "./plugins/argon-kit";
 import wysiwyg from "vue-wysiwyg";
+import Antd from 'ant-design-vue';
 import './registerServiceWorker'
+import config from '../config'
+
+Vue.use(config)
 Vue.config.productionTip = false;
+Vue.use(Antd);
 Vue.use(Argon);
 Vue.use(wysiwyg, {
   hideModules: {
