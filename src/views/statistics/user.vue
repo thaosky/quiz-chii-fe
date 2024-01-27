@@ -61,7 +61,7 @@ export default {
   },
   async created() {
     this.loading = true
-    await axios.get(`http://localhost:8080/quiz/api/results/user/${this.store.user.id}`, {
+    await axios.get(this.$appConfig.apiBaseUrl + `/quiz/api/results/user/${this.store.user.id}`, {
       headers: {
         Authorization: `Bearer ${store.token}`
       }

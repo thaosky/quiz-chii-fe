@@ -436,7 +436,7 @@ export default {
       await this.getQuestions()
     },
     async getQuestions() {
-      let url = `http://localhost:8080/quiz/api/questions?pageNo=${this.pageNo - 1}&pageSize=${this.pageSize}&sortDir=${this.sortDir}&sortName=${this.sortName}`
+      let url = this.$appConfig.apiBaseUrl + `/quiz/api/questions?pageNo=${this.pageNo - 1}&pageSize=${this.pageSize}&sortDir=${this.sortDir}&sortName=${this.sortName}`
       if (this.tagId) {
         url += `&tagId=${this.tagId}`
       }
@@ -458,7 +458,7 @@ export default {
           })
     },
     async deleteQuestions() {
-      await axios.delete(`http://localhost:8080/quiz/api/questions`, {
+      await axios.delete(this.$appConfig.apiBaseUrl + `/quiz/api/questions`, {
         headers: {
           Authorization: `Bearer ${store.token}`
         },

@@ -93,7 +93,7 @@ export default {
       return content
     },
     async searchByTag () {
-      let url = `http://localhost:8080/quiz/api/tests?pageNo=${this.pageNo - 1}&pageSize=${this.pageSize}&sortDir=${this.sortDir}&sortName=${this.sortName}`
+      let url = this.$appConfig.apiBaseUrl + `/quiz/api/tests?pageNo=${this.pageNo - 1}&pageSize=${this.pageSize}&sortDir=${this.sortDir}&sortName=${this.sortName}`
       if (this.selectedTagId) {
         url += `&tagId=${this.selectedTagId}`
       }

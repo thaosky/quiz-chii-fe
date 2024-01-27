@@ -84,7 +84,7 @@ export default {
   },
   methods: {
     updateUser () {
-      axios.put(`http://localhost:8080/quiz/api/users/${this.store.user.id}`, {
+      axios.put(this.$appConfig.apiBaseUrl + `/quiz/api/users/${this.store.user.id}`, {
         email: this.email,
         name: this.name,
         active: 1
@@ -103,7 +103,7 @@ export default {
       })
     },
     refreshUserInfo () {
-      axios.get(`http://localhost:8080/quiz/api/users/${this.store.user.id}`, {
+      axios.get(this.$appConfig.apiBaseUrl + `/quiz/api/users/${this.store.user.id}`, {
         headers: {
           'Authorization': `Bearer ${this.store.token}`
         }

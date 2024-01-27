@@ -172,7 +172,7 @@ export default {
     },
     getTags () {
       this.loading = true
-      axios.get(`http://localhost:8080/quiz/api/tags?pageNo=${this.pageNo - 1}&pageSize=${this.pageSize}&sortDir=${this.sortDir}&sortName=${this.sortName}`)
+      axios.get(this.$appConfig.apiBaseUrl + `/quiz/api/tags?pageNo=${this.pageNo - 1}&pageSize=${this.pageSize}&sortDir=${this.sortDir}&sortName=${this.sortName}`)
           .then(res => {
             this.tags = res.data.data.items
             this.totalPage = res.data.data.totalPage
@@ -216,7 +216,7 @@ export default {
       this.editModal.description = tag.description
     },
     async editTag () {
-      await axios.put(`http://localhost:8080/quiz/api/tags/${this.editModal.id}`, {
+      await axios.put(this.$appConfig.apiBaseUrl + `/quiz/api/tags/${this.editModal.id}`, {
         name: this.editModal.name,
         description: this.editModal.description
       }, {
@@ -232,7 +232,7 @@ export default {
       })
     },
     deleteTag () {
-      axios.delete(`http://localhost:8080/quiz/api/tags/${this.deleteModal.id}`, {
+      axios.delete(this.$appConfig.apiBaseUrl + `/quiz/api/tags/${this.deleteModal.id}`, {
         headers: {
           Authorization: `Bearer ${store.token}`
         }

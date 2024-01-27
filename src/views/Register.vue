@@ -115,7 +115,7 @@ export default {
   },
   methods: {
     async register () {
-      await axios.post(`http://localhost:8080/quiz/auth/register`, {
+      await axios.post(this.$appConfig.apiBaseUrl + `/quiz/auth/register`, {
         username: this.username,
         email: this.email,
         name: this.name,

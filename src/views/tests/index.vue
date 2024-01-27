@@ -137,7 +137,7 @@ export default {
       return content
     },
     async getTests () {
-      let url = `http://localhost:8080/quiz/api/tests?pageNo=${this.pageNo - 1}&pageSize=${this.pageSize}&sortDir=${this.sortDir}&sortName=${this.sortName}`
+      let url = this.$appConfig.apiBaseUrl + `/quiz/api/tests?pageNo=${this.pageNo - 1}&pageSize=${this.pageSize}&sortDir=${this.sortDir}&sortName=${this.sortName}`
       if (this.tagId) {
         url += `&tagId=${this.tagId}`
       }
@@ -165,7 +165,7 @@ export default {
       this.deleteModal.id = test.id
     },
     deleteTest () {
-      axios.delete(`http://localhost:8080/quiz/api/tests/${id}`, {
+      axios.delete(this.$appConfig.apiBaseUrl + `/quiz/api/tests/${id}`, {
         headers: {
           Authorization: `Bearer ${store.token}`
         }

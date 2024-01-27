@@ -139,7 +139,7 @@ export default {
   },
   methods: {
     updatePassword () {
-      axios.post(`http://localhost:8080/quiz/auth/${this.store.user.id}/change-password`, {
+      axios.post(this.$appConfig.apiBaseUrl + `/quiz/auth/${this.store.user.id}/change-password`, {
         oldPassword: this.oldPassword,
         newPassword: this.newPassword,
       }, {

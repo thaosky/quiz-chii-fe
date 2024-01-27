@@ -257,7 +257,7 @@ export default {
       this.getUsers()
     },
     async getUsers() {
-      let url = `http://localhost:8080/quiz/api/users?pageNo=${this.pageNo - 1}&pageSize=${this.pageSize}&sortDir=${this.sortDir}&sortName=${this.sortName}`
+      let url = this.$appConfig.apiBaseUrl + `/quiz/api/users?pageNo=${this.pageNo - 1}&pageSize=${this.pageSize}&sortDir=${this.sortDir}&sortName=${this.sortName}`
       if (this.keyword) {
         url += `&content=${this.keyword}`
       }
@@ -392,7 +392,7 @@ export default {
       if (hasNewPassword) {
         data.password = password
       }
-      axios.put(`http://localhost:8080/quiz/api/users/${id}`, data, {
+      axios.put(this.$appConfig.apiBaseUrl + `/quiz/api/users/${id}`, data, {
         headers: {
           'Authorization': `Bearer ${store.token}`
         }
