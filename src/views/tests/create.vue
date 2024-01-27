@@ -13,7 +13,7 @@
             <option v-for="tag in tagList" :key="tag.id" :value="tag.id">{{ tag.name }}</option>
           </select>
 
-          <a-spin :spinning="questionLoading" class="w-100" size="large">
+          <a-spin :spinning="questionLoading" class="w-100 mt-4" size="large">
             <table v-if="addQuestionModal.questions.length" class="table table-striped">
               <thead>
               <tr>
@@ -68,34 +68,29 @@
                 <div class="form-group col-md-12">
                   <label for="content">Loại bài thi</label>
                   <select v-model="testType" class="form-control">
-                    <option value="0">Không thể thi lại, thời gian bắt đầu cố định</option>
-                    <option value="1">Không thể thi lại, thời gian thi không cố định</option>
-                    <option value="2">Có thể thi lại</option>
+                    <option value="ONCE_WITH_TIME">Không thể thi lại, thời điểm bắt đầu cố định</option>
+                    <option value="ONCE_WITHOUT_TIME">Không thể thi lại, thời điểm bắt đầu không cố định</option>
+                    <option value="PRACTICE">Có thể thi lại</option>
                   </select>
                 </div>
               </div>
-              <div v-if="testType === 0" class="form-row">
-                <div class="form-group col-md-12">
-                  <label class="d-block" for="startDate">Thời gian thi</label>
+              <div class="form-row">
+                <div v-if="testType === 'ONCE_WITH_TIME'" class="form-group col-md-6">
+                  <label for="startTime">Thời điểm bắt đầu</label>
                   <a-date-picker
-                      id="startDate"
-                      v-model="startDate"
-                      :disabled-date="disabledPrevDate"
-                      format="DD/MM/YYYY"
-                      name="startDate"
-                      placeholder="Chọn ngày"
-                      style="width: 50%"
-                  />
-                  <a-time-picker
-                      v-model="startTime"
-                      format="HH:mm"
-                      placeholder="Chọn giờ"
-                      style="width: 50%"
+                    id="startTime"
+                    v-model="startTime"
+                    :disabled-date="disabledPrevDate"
+                    :show-time="{ defaultValue: moment('00:00', 'HH:mm'), format: 'HH:mm' }"
+                    :showToday="false"
+                    class="w-100"
+                    format="DD/MM/YYYY HH:mm"
+                    name="startDate"
+                    placeholder="Chọn ngày"
+                    valueFormat="YYYY-MM-DD HH:mm:00"
                   />
                 </div>
-              </div>
-              <div v-else class="form-row">
-                <div class="form-group col-md-12">
+                <div class="form-group col-md-6">
                   <label for="content">Thời gian làm bài</label>
                   <input v-model="availableTime" class="form-control" required type="number"/>
                 </div>
@@ -104,29 +99,29 @@
                 <div class="form-group col-md-12">
                   <label for="tags">Tags</label>
                   <b-form-tags
-                      v-if="tagNameList.length > 0"
-                      id="tags-component-select"
-                      v-model="selectedTags"
-                      add-on-change
-                      class="mb-2"
-                      no-outer-focus
+                    v-if="tagNameList.length > 0"
+                    id="tags-component-select"
+                    v-model="selectedTags"
+                    add-on-change
+                    class="mb-2"
+                    no-outer-focus
                   >
                     <template v-slot="{ tags, inputAttrs, inputHandlers, disabled, removeTag }">
                       <ul v-if="tags.length > 0" class="list-inline d-inline-block mb-2">
                         <li v-for="tag in tags" :key="tag" class="list-inline-item">
                           <b-form-tag
-                              :disabled="disabled"
-                              :title="tag"
-                              @remove="removeTag(tag)"
+                            :disabled="disabled"
+                            :title="tag"
+                            @remove="removeTag(tag)"
                           >{{ tag }}
                           </b-form-tag>
                         </li>
                       </ul>
                       <b-form-select
-                          :disabled="disabled || availableTags.length === 0"
-                          :options="availableTags"
-                          v-bind="inputAttrs"
-                          v-on="inputHandlers"
+                        :disabled="disabled || availableTags.length === 0"
+                        :options="availableTags"
+                        v-bind="inputAttrs"
+                        v-on="inputHandlers"
                       >
                         <template #first>
                           <!-- This is required to prevent bugs with Safari -->
@@ -171,8 +166,9 @@
               </tbody>
             </table>
             <button
-                v-if="this.name && this.availableTime && addQuestionModal.selectedQuestionIds.length"
-                class="btn btn-success" type="button" @click="storeTest"
+              v-if="addQuestionModal.selectedQuestionIds.length"
+              :disabled="!name || !availableTime || !addQuestionModal.selectedQuestionIds.length"
+              class="btn btn-success" type="button" @click="storeTest"
             >
               Lưu lại
             </button>
@@ -215,9 +211,9 @@ export default {
       availableTime: '',
       selectedTags: [],
       questionLoading: false,
-      testType: 0,
-      startDate: null,
+      testType: '',
       startTime: null,
+      loadingQuestions: false
     }
   },
   computed: {
@@ -233,6 +229,7 @@ export default {
     this.getQuestions()
   },
   methods: {
+    moment,
     showModal() {
       this.addQuestionModal.show = true
       this.addQuestionModal.selectingTagId = null
@@ -269,6 +266,11 @@ export default {
         return
       }
 
+      if (this.testType === 0 && !this.startTime) {
+        store.displayError('Vui lòng chọn thời gian thi')
+        return
+      }
+
       const questionIds = []
       for (let questionId of this.addQuestionModal.selectedQuestionIds) {
         questionIds.push({id: questionId})
@@ -283,56 +285,59 @@ export default {
       await axios.post(this.$appConfig.apiBaseUrl + '/quiz/api/tests', {
         name: this.name,
         description: this.description,
-        availableTime: this.availableTime,
         tagList: tagIds,
-        questionList: questionIds
+        questionList: questionIds,
+        testType: this.testType,
+        startTime: this.startTime,
+        availableTime: this.availableTime,
       }, {
         headers: {
           'Authorization': `Bearer ${store.token}`
         }
       })
-          .then(res => {
-            store.displaySuccess('Tạo bài thi thành công')
-            this.$router.push('/tests')
-          })
-          .catch(err => {
-            store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
-          })
+        .then(res => {
+          store.displaySuccess('Tạo bài thi thành công')
+          this.$router.push('/tests')
+        })
+        .catch(err => {
+          store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
+        })
     },
     async getQuestionsForModal() {
       let url = this.$appConfig.apiBaseUrl + '/quiz/api/questions?pageSize=100000&pageNo=0'
       if (this.addQuestionModal.selectingTagId) {
         url += '&tagId=' + this.addQuestionModal.selectingTagId
       }
-      await axios.get(url)
-          .then(res => {
-            this.addQuestionModal.questions = res.data.data.items
-          })
-          .catch(err => {
-            store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
-          })
+      this.questionLoading = true
+      await axios.get(url).then(res => {
+        this.addQuestionModal.questions = res.data.data.items
+      }).catch(err => {
+        store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
+      }).finally(() => {
+        this.questionLoading = false
+      })
     },
     async getTags() {
       await axios.get(this.$appConfig.apiBaseUrl + '/quiz/api/tags?pageSize=100000&pageNo=0')
-          .then(res => {
-            this.tagList = res.data.data.items
-          })
-          .catch(err => {
-            store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
-          })
+        .then(res => {
+          this.tagList = res.data.data.items
+        })
+        .catch(err => {
+          store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
+        })
     },
     async getQuestions() {
       this.questionLoading = true
       await axios.get(this.$appConfig.apiBaseUrl + '/quiz/api/questions?pageSize=100000&pageNo=0')
-          .then(res => {
-            this.questions = res.data.data.items
-          })
-          .catch(err => {
-            store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
-          })
-          .finally(() => {
-            this.questionLoading = false
-          })
+        .then(res => {
+          this.questions = res.data.data.items
+        })
+        .catch(err => {
+          store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
+        })
+        .finally(() => {
+          this.questionLoading = false
+        })
     },
     convertAnswer(question) {
       if (question.correctAnswer) {

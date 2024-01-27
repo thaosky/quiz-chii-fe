@@ -1952,3 +1952,22 @@ a:hover {
   height: 24px !important;
   align-items: center !important;
 }
+
+.ant-calendar-picker input {
+  height: 46px;
+}
+
+button[disabled] {
+  cursor: not-allowed !important;
+}
+
+.ant-calendar-time-picker-btn {
+  position: relative;
+}
+.ant-calendar-time-picker-btn::before {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  content: 'Chọn giờ';
+  background: #fff;
+}

@@ -20,6 +20,7 @@
                   <tr>
                     <th scope="col">Tên quiz</th>
                     <th scope="col">Mô tả</th>
+                    <th scope="col">Ngày thi</th>
                     <th scope="col">Thời lượng</th>
                     <th scope="col">Tags</th>
                     <th scope="col"></th>
@@ -32,6 +33,9 @@
                     </td>
                     <td :title="test.description" data-toggle="tooltip">
                       {{ shortenContent(test.description) }}
+                    </td>
+                    <td :title="test.startTime" data-toggle="tooltip">
+                      {{ test.startTime }}
                     </td>
                     <td :title="test.availableTime" data-toggle="tooltip">
                       {{ shortenContent(test.availableTime) + ' phút' }}
@@ -108,6 +112,7 @@ export default {
       sortName: this.$route.query.sortName || 'id',
       keyword: this.$route.query.keyword || '',
       tagId: this.$route.query.tagId || '',
+      testType: this.$route.query.testType || (store.isLoggedIn() ? '' : 'PRACTICE'),
       totalPage: 0,
       total: 0,
       selectedTagId: '',
@@ -143,6 +148,9 @@ export default {
       }
       if (this.keyword) {
         url += `&name=${this.keyword}`
+      }
+      if (this.testType) {
+        url += `&testType=${this.testType}`
       }
       this.loading = true
       await axios.get(url).then(res => {
