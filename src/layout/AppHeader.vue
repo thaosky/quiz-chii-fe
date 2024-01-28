@@ -204,7 +204,7 @@ export default {
       localStorage.removeItem('user');
       localStorage.removeItem('token');
       localStorage.removeItem('expired');
-      this.$router.push('/login');
+      this.$router.push('/');
     },
     login() {
       this.$router.push('/login');

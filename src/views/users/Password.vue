@@ -147,7 +147,11 @@ export default {
           'Authorization': `Bearer ${this.store.token}`
         }
       }).then(res => {
-        store.displaySuccess('Câp nhật mật khẩu thành công')
+        store.displaySuccess('Câp nhật mật khẩu thành công');
+          localStorage.removeItem('user');
+          localStorage.removeItem('token');
+          localStorage.removeItem('expired');
+          this.$router.push('/');
       }).catch(err => {
         if (err.response.data.error)
           store.displayError(err.response.data.error)
