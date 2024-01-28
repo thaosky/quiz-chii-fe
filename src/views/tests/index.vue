@@ -44,10 +44,12 @@
                       <span v-for="tag in test.tagList" :key="tag.id" class="badge badge-primary">{{ tag.name }}</span>
                     </td>
                     <td style="display: flex; justify-content: center">
-                      <router-link
-                          :to="{ name: 'tests.detail', params: { id: test.id } }"
-                          class="btn btn-sm btn-neutral">Xem
-                      </router-link>
+                      <template v-if="!store.isLoggedIn()">
+                        <router-link
+                            :to="{ name: 'tests.detail', params: { id: test.id } }"
+                            class="btn btn-sm btn-neutral">Xem
+                        </router-link>
+                      </template>
                       <template v-if="store.isLoggedIn()">
                         <router-link
                             :to="{ name: 'tests.start', params: { id: test.id } }"
