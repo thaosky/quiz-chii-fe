@@ -127,7 +127,8 @@
         </div>
       </div>
     </div>
-    <div class="modal-cover position-a w-100" style="position: fixed;" :style="{'display': endEarlyModalShow ? 'block' : 'none'}">
+    <div class="modal-cover position-a w-100" style="position: fixed;"
+         :style="{'display': endEarlyModalShow ? 'block' : 'none'}">
       <div id="popupReview" class="popup-modal bg-white text-center" style="">
         <div class="w-100 text-center popup-modal-image position-a" style="z-index: -1">
           <img alt="image popup" src="https://learn.mochidemy.com/image/ea34698fbeae819618073bb7e0298139.png">
@@ -162,11 +163,11 @@
 
 <script>
 import axios from 'axios'
-import { store } from '@/store'
+import {store} from '@/store'
 
 export default {
   name: 'tests-start',
-  data () {
+  data() {
     return {
       store,
       startedTime: null,
@@ -184,7 +185,7 @@ export default {
     }
   },
   computed: {
-    progress () {
+    progress() {
       if (this.totalQuestions === 0) {
         return 5
       }
@@ -194,13 +195,13 @@ export default {
       }
       return progress < 5 ? 5 : progress
     },
-    currentQuestion () {
+    currentQuestion() {
       if (this.totalQuestions === 0) {
         return {}
       }
       return this.questions[this.currentQuestionNo]
     },
-    formattedRemainingTime () {
+    formattedRemainingTime() {
       const remainingTime = this.availableTime - this.passedTime
       if (remainingTime <= 0) {
         return '00:00'
@@ -210,7 +211,7 @@ export default {
       return `${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`
     },
   },
-  async created () {
+  async created() {
     // add refresh event listener
     window.onbeforeunload = function (e) {
       return 'Are you sure you want to leave? Your progress will be lost.'
@@ -218,10 +219,10 @@ export default {
     await this.getQuestions()
   },
   methods: {
-    endTestEarly () {
+    endTestEarly() {
       this.endEarlyModalShow = true
     },
-    async getQuestions () {
+    async getQuestions() {
       axios.get(this.$appConfig.apiBaseUrl + '/quiz/api/tests/' + this.$route.params.id,
           {
             headers: {
@@ -244,22 +245,22 @@ export default {
             }, 1000)
           })
     },
-    setAnswer (answer) {
+    setAnswer(answer) {
       this.currentAnswer = answer
     },
-    skipQuestion () {
+    skipQuestion() {
       if (this.currentQuestionNo < this.totalQuestions - 1) {
         this.currentQuestionNo++
         this.currentAnswer = 0
       }
     },
-    nextQuestion () {
+    nextQuestion() {
       this.answers[this.currentQuestionNo] = this.currentAnswer
       this.currentAnswer = 0
       this.currentQuestionNo++
       this.totalAnswers++
     },
-    submitTest () {
+    submitTest() {
       this.answers[this.currentQuestionNo] = this.currentAnswer
       this.totalAnswers++
       if (this.totalAnswers < this.totalQuestions) {
@@ -273,7 +274,7 @@ export default {
         this.submit()
       }
     },
-    submit () {
+    submit() {
       clearInterval(this.interval)
       const submittedAt = new Date().toISOString().slice(0, 19).replace('T', ' ')
       const data = {
@@ -294,13 +295,19 @@ export default {
           'Authorization': `Bearer ${this.store.token}`
         }
       }).then(response => {
-        this.store.displaySuccess('Nộp bài thành công')
+        if (response.data.data.firstSubmit
+            && response.data.data.messageStreak !== null
+            && response.data.data.messageStreak !== '') {
+          this.store.displaySuccess(response.data.data.messageStreak)
+        } else {
+          this.store.displaySuccess('Nộp bài thành công')
+        }
         this.$router.push('/statistics/' + response.data.data.resultId)
       }).catch(error => {
         store.displayError('Có lỗi xảy ra khi nộp bài. Vui lòng thử lại sau.')
       })
     },
-    goToQuestion (index) {
+    goToQuestion(index) {
       if (this.currentAnswer !== 0) {
         this.answers[this.currentQuestionNo] = this.currentAnswer
       }
@@ -308,11 +315,11 @@ export default {
       this.currentAnswer = this.answers[index] || 0
     },
   },
-  beforeDestroy () {
+  beforeDestroy() {
     clearInterval(this.interval)
     window.onbeforeunload = null
   },
-  beforeRouteUpdate (to, from, next) {
+  beforeRouteUpdate(to, from, next) {
     console.log(to.path)
     if (to.path !== '/tests/start/' + this.$route.params.id) {
       const confirm = window.confirm('Are you sure you want to leave? Your progress will be lost.')
