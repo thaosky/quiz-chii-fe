@@ -78,24 +78,24 @@
                     </div>
                   </div>
                   <div class="form-row">
-                    <div v-if="testType === 'ONCE_WITH_TIME'" class="form-group col-md-6">
-                      <label for="startTime">Thời điểm bắt đầu</label>
-                      <a-date-picker
-                        id="startTime"
-                        v-model="startTime"
-                        :disabled-date="disabledPrevDate"
-                        :show-time="{ defaultValue: moment('00:00', 'HH:mm'), format: 'HH:mm' }"
-                        :showToday="false"
-                        class="w-100"
-                        format="DD/MM/YYYY HH:mm"
-                        name="startDate"
-                        placeholder="Chọn ngày"
-                        valueFormat="YYYY-MM-DD HH:mm:00"
-                      />
-                    </div>
                     <div class="form-group col-md-6">
                       <label for="content">Thời gian làm bài</label>
                       <input v-model="availableTime" class="form-control" required type="number"/>
+                    </div>
+                    <div v-if="testType === 'ONCE_WITH_TIME'" class="form-group col-md-6">
+                      <label for="startTime">Thời điểm bắt đầu</label>
+                      <a-date-picker
+                          id="startTime"
+                          v-model="startTime"
+                          :disabled-date="disabledPrevDate"
+                          :show-time="{ defaultValue: moment('00:00', 'HH:mm'), format: 'HH:mm' }"
+                          :showToday="false"
+                          class="w-100"
+                          format="DD/MM/YYYY HH:mm"
+                          name="startDate"
+                          placeholder="Chọn ngày"
+                          valueFormat="YYYY-MM-DD HH:mm:00"
+                      />
                     </div>
                   </div>
                   <div class="form-row">
@@ -223,7 +223,7 @@ export default {
     this.getTags()
     this.getQuestions()
     this.loading = true
-    axios.get(this.$appConfig.apiBaseUrl + '/quiz/api/tests/admin/' + this.$route.params.id, {
+    axios.get(this.$appConfig.apiBaseUrl + '/quiz/api/tests/' + this.$route.params.id, {
       headers: {
         'Authorization': `Bearer ${store.token}`
       }
