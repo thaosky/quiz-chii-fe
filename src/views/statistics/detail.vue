@@ -25,10 +25,10 @@
                       {{ result.testName }}
                     </h4>
                     <p class="title-box">
-                      Thời gian bắt đầu: {{ result.startedAt }}
+                      Thời gian nộp bài: {{ submitedTime_ }}
                     </p>
                     <p class="title-box">
-                      Thời gian sử dụng: {{ timeUsed }}
+                      Thời gian làm bài: {{ timeUsed }}
                     </p>
                     <div class="process-box">
                       <div :style="{width: percentage + '%'}" class="process-box-1 progress-count-proficiency"></div>
@@ -146,6 +146,22 @@ export default {
       // convert seconds to minutes
       return Math.floor(diff / 60) + ' phút ' + Math.floor(diff % 60) + ' giây'
     },
+
+    submitedTime_() {
+      const date = new Date(this.result.submittedAt);
+      let datePart = [
+        date.getMonth() + 1,
+        date.getDate(),
+        date.getFullYear()
+      ].map((n, i) => n.toString().padStart(i === 2 ? 4 : 2, "0")).join("/");
+      let timePart = [
+        date.getHours(),
+        date.getMinutes(),
+        date.getSeconds()
+      ].map((n, i) => n.toString().padStart(2, "0")).join(":");
+      return datePart + " " + timePart;
+    },
+
     currentQuestion () {
       if (!this.result.resultDetails) return {}
       return this.result.resultDetails[this.currentQuestionIndex]

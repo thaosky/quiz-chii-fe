@@ -11,8 +11,9 @@
             <tr>
               <th scope="col">Tên quiz</th>
               <th scope="col">Mô tả</th>
-              <th scope="col">Thời lượng</th>
-              <th scope="col">Tags</th>
+              <th scope="col">Số lượt thi</th>
+              <th scope="col">Điểm trung bình</th>
+              <th scope="col">Tag</th>
               <th scope="col"></th>
             </tr>
             </thead>
@@ -24,8 +25,11 @@
               <td :title="test.description" data-toggle="tooltip">
                 {{ shortenContent(test.description) }}
               </td>
-              <td :title="test.availableTime" data-toggle="tooltip">
-                {{ shortenContent(test.availableTime) + ' phút' }}
+              <td data-toggle="tooltip">
+                {{ test.totalSubmit }}
+              </td>
+              <td data-toggle="tooltip">
+                {{ test.averagePoint  }}
               </td>
               <td>
                 <span v-for="tag in test.tagList" :key="tag.id" class="badge badge-primary">{{ tag.name }}</span>

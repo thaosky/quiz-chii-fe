@@ -7,7 +7,7 @@
             <thead>
             <tr>
               <th scope="col">Tên</th>
-              <th scope="col">Thời điểm bắt đầu</th>
+              <th scope="col">Thời điểm nộp bài</th>
               <th scope="col">Thời gian làm bài</th>
               <th scope="col">Kết quả</th>
               <th scope="col">Điểm</th>

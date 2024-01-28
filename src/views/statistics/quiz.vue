@@ -13,7 +13,7 @@
                   <thead>
                   <tr>
                     <th scope="col">Tên</th>
-                    <th scope="col">Thời điểm bắt đầu</th>
+                    <th scope="col">Thời điểm nộp bài</th>
                     <th scope="col">Thời gian làm bài</th>
                     <th scope="col">Kết quả</th>
                     <th scope="col">Điểm</th>
@@ -24,8 +24,8 @@
                     <td :title="detail.username" data-toggle="tooltip">
                       {{ detail.username }}
                     </td>
-                    <td :title="detail.startedAt.substr(0, 19)" data-toggle="tooltip">
-                      {{ detail.startedAt.substr(0, 19) }}
+                    <td :title="submittedTime_(detail.submittedAt)" data-toggle="tooltip">
+                      {{submittedTime_(detail.submittedAt)}}
                     </td>
                     <td :title="calcTimeUsed(detail.startedAt, detail.submittedAt)" data-toggle="tooltip">
                       {{ calcTimeUsed(detail.startedAt, detail.submittedAt) }}
@@ -84,6 +84,20 @@ export default {
       const minutes = Math.floor(diff / 1000 / 60)
       const seconds = Math.floor(diff / 1000) - minutes * 60
       return `${minutes < 10 ? '0' + minutes : minutes}m:${seconds < 10 ? '0' + seconds : seconds}s`
+    },
+    submittedTime_(submittedAt) {
+      const date = new Date(submittedAt);
+      let datePart = [
+        date.getMonth() + 1,
+        date.getDate(),
+        date.getFullYear()
+      ].map((n, i) => n.toString().padStart(i === 2 ? 4 : 2, "0")).join("/");
+      let timePart = [
+        date.getHours(),
+        date.getMinutes(),
+        date.getSeconds()
+      ].map((n, i) => n.toString().padStart(2, "0")).join(":");
+      return datePart + " " + timePart;
     },
   }
 }
