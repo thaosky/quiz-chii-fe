@@ -29,7 +29,7 @@
                 {{ detail.corrected }} / {{ detail.totalQuestion }}
               </td>
               <td :title="detail.corrected" data-toggle="tooltip">
-                {{ Math.round(detail.corrected / detail.totalQuestion * 100) }}%
+                {{ (detail.corrected / detail.totalQuestion * 100).toFixed(2) }}
               </td>
               <td>
                 <router-link :to="`/statistics/${detail.resultId}`">

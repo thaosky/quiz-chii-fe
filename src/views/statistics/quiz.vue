@@ -34,7 +34,7 @@
                       {{ detail.corrected }} / {{ detail.totalQuestion }}
                     </td>
                     <td :title="detail.corrected" data-toggle="tooltip">
-                      {{ Math.round(detail.corrected * 100 / detail.totalQuestion) }}
+                      {{(detail.corrected * 100 / detail.totalQuestion).toFixed(2) }}
                     </td>
                   </tr>
                   </tbody>
