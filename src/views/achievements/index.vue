@@ -8,33 +8,30 @@
         <section class="section section-lg pt-lg-0 w-100" style="margin-top: 200px">
           <div class="container">
             <div class="d-flex justify-content-center my-3">
-              <SearchCustom :tags="[]" @submit="searchUsers"></SearchCustom>
+              <SearchCustom :tags="[]" @submit="searchAchievements"></SearchCustom>
             </div>
             <div class="row mb-3" style="justify-content: end">
               <button class="btn btn-success" @click="createModal.show=true">Thêm thành tựu</button>
             </div>
             <div class="row justify-content-center bg-white">
               <a-spin :spinning="loading" class="w-100" size="large">
-                <table v-if="users.length" class="table table-striped">
+                <table v-if="achievements.length" class="table table-striped">
                   <thead>
                   <tr>
-                    <th scope="col">Username</th>
-                    <th scope="col">Tên người dùng</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Vai trò</th>
-                    <th scope="col">Trạng thái</th>
+                    <th scope="col">Tên thành tựu</th>
+                    <th scope="col">Thông báo</th>
+                    <th scope="col">Số ngày liên tục</th>
                     <th scope="col"></th>
                   </tr>
                   </thead>
                   <tbody>
-                  <tr v-for="user in users" :key="user.username">
-                    <td>{{ user.username }}</td>
-                    <td>{{ user.name }}</td>
-                    <td>{{ user.email }}</td>
-                    <td> {{ getRoles(user.role) }}</td>
-                    <td>{{ user.active ? 'Đang hoạt động' : 'Đã khóa' }}</td>
+                  <tr v-for="achievement in achievements" :key="achievement.id">
+                    <td>{{ achievement.name }}</td>
+                    <td>{{ achievement.message }}</td>
+                    <td>{{ achievement.daysStreak }}</td>
                     <td>
-                      <button class="btn btn-sm btn-primary" @click="showUpdateModal(user)">Sửa</button>
+                      <button class="btn btn-sm btn-primary" @click="showUpdateModal(achievement)">Sửa</button>
+                      <button class="btn btn-sm btn-danger" @click="showDeleteAchievementModal(achievement.id)">Xóa</button>
                     </td>
                   </tr>
                   </tbody>
@@ -55,127 +52,88 @@
         </section>
         <Modal :show="createModal.show" @close="createModal.show = false">
           <template v-slot:header>
-            <h4>Tạo người dùng</h4>
+            <h4>Tạo thành tựu</h4>
           </template>
           <template>
             <form action="">
               <div class="form-group">
-                <label :class="{'text-danger': createModal.errors.username}" for="username">Tên đăng nhập</label>
-                <input v-model="createModal.username" :class="{'is-invalid': createModal.errors.username}"
+                <label :class="{'text-danger': createModal.errors.name}" for="name">Tên thành tựu</label>
+                <input v-model="createModal.name" :class="{'is-invalid': createModal.errors.name}"
                        class="form-control"
-                       placeholder="Nhập tên đăng nhập" type="text"
-                       @focus="createModal.errors.username = ''">
-                <p class="input__message__error"><small>{{ createModal.errors.username }}</small></p>
-              </div>
-              <div class="form-group">
-                <label :class="{'text-danger': createModal.errors.name}" for="name">Tên hiển thị</label>
-                <input v-model="createModal.name" :class="{'is-invalid': createModal.errors.name}" class="form-control"
-                       placeholder="Nhập tên hiển thị" type="text"
+                       placeholder="Nhập tên thành tựu" type="text"
                        @focus="createModal.errors.name = ''">
                 <p class="input__message__error"><small>{{ createModal.errors.name }}</small></p>
               </div>
               <div class="form-group">
-                <label :class="{'text-danger': createModal.errors.email}" for="email">Email</label>
-                <input v-model="createModal.email" :class="{'is-invalid': createModal.errors.email}"
+                <label :class="{'text-danger': createModal.errors.message}" for="message">Thông báo</label>
+                <input v-model="createModal.message" :class="{'is-invalid': createModal.errors.message}"
                        class="form-control"
-                       placeholder="Nhập email" type="email"
-                       @focus="createModal.errors.email = ''">
-                <p class="input__message__error"><small>{{ createModal.errors.email }}</small></p>
+                       placeholder="Nhập thông báo" type="text"
+                       @focus="createModal.errors.message = ''">
+                <p class="input__message__error"><small>{{ createModal.errors.message }}</small></p>
               </div>
               <div class="form-group">
-                <label :class="{'text-danger': createModal.errors.password}" for="password">Mật khẩu</label>
-                <div>
-                  <div style="position: relative;">
-                    <input
-                        v-model="createModal.password"
-                        :class="{'is-invalid': createModal.errors.password}"
-                        :type="createModal.showPassword ? 'text' : 'password'"
-                        class="form-control"
-                        name="password"
-                        placeholder="Nhập mật khẩu"
-                        @focus="createModal.errors.password = ''">
-                    <span style="position: absolute; top:0.7em;right:1em;cursor: pointer;"
-                          @click="createModal.showPassword = !createModal.showPassword">
-                        <i v-if="createModal.showPassword" class="fa fa-eye-slash"></i>
-                        <i v-else class="fa fa-eye"></i>
-                      </span>
-                  </div>
-                  <p class="input__message__error"><small>{{ createModal.errors.password }}</small></p>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="role">Vai trò</label>
-                <select v-model="createModal.role" class="form-control">
-                  <option value="admin">Quản trị viên</option>
-                  <option value="user">Người dùng</option>
-                </select>
+                <label :class="{'text-danger': createModal.errors.daysStreak}" for="daysStreak">Số ngày liên tục</label>
+                <input v-model="createModal.daysStreak" :class="{'is-invalid': createModal.errors.daysStreak}"
+                       class="form-control"
+                       placeholder="Nhập số ngày liên tục" type="number"
+                       @focus="createModal.errors.daysStreak = ''">
+                <p class="input__message__error"><small>{{ createModal.errors.daysStreak }}</small></p>
               </div>
             </form>
           </template>
           <template v-slot:footer>
             <button class="btn btn-secondary" type="button" @click="createModal.show = false">Đóng</button>
-            <button class="btn btn-success" type="button" @click="createUser">Tạo</button>
+            <button class="btn btn-success" type="button" @click="createAchievement">Tạo</button>
           </template>
         </Modal>
         <Modal :show="updateModal.show" @close="updateModal.show = false">
           <template v-slot:header>
-            <h4>Cập nhật người dùng</h4>
+            <h4>Cập nhật thành tựu</h4>
           </template>
           <template>
             <form action="">
               <div class="form-group">
-                <label for="username">Tên đăng nhập</label>
-                <div class=""> {{ updateModal.username }}</div>
-              </div>
-              <div class="form-group">
-                <label :class="{'text-danger': updateModal.errors.name}" for="name">Tên hiển thị</label>
-                <input v-model="updateModal.name" :class="{'is-invalid': updateModal.errors.name}" class="form-control"
-                       placeholder="Nhập tên hiển thị" type="text"
+                <label :class="{'text-danger': updateModal.errors.name}" for="name">Tên thành tựu</label>
+                <input v-model="updateModal.name" :class="{'is-invalid': updateModal.errors.name}"
+                       class="form-control"
+                       placeholder="Nhập tên thành tựu" type="text"
                        @focus="updateModal.errors.name = ''">
                 <p class="input__message__error"><small>{{ updateModal.errors.name }}</small></p>
               </div>
               <div class="form-group">
-                <label :class="{'text-danger': updateModal.errors.email}" for="email">Email</label>
-                <input v-model="updateModal.email" :class="{'is-invalid': updateModal.errors.email}"
+                <label :class="{'text-danger': updateModal.errors.message}" for="message">Thông báo</label>
+                <input v-model="updateModal.message" :class="{'is-invalid': updateModal.errors.message}"
                        class="form-control"
-                       placeholder="Nhập email" type="email"
-                       @focus="updateModal.errors.email = ''">
-                <p class="input__message__error"><small>{{ updateModal.errors.email }}</small></p>
+                       placeholder="Nhập thông báo" type="text"
+                       @focus="updateModal.errors.message = ''">
+                <p class="input__message__error"><small>{{ updateModal.errors.message }}</small></p>
               </div>
               <div class="form-group">
-                <label :class="{'text-danger': updateModal.errors.password}" for="password">Mật khẩu</label>
-                <div>
-                  <input v-model="updateModal.hasNewPassword" type="checkbox"> Cập nhật mật khẩu
-                  <div v-if="updateModal.hasNewPassword" style="position: relative;margin-top: 10px">
-                    <input
-                        v-model="updateModal.password"
-                        :class="{'is-invalid': updateModal.errors.password}"
-                        :type="updateModal.showPassword ? 'text' : 'password'"
-                        class="form-control"
-                        name="password"
-                        placeholder="Nhập mật khẩu mới"
-                        @focus="updateModal.errors.password = ''">
-                    <span style="position: absolute; top:0.7em;right:1em;cursor: pointer;"
-                          @click="updateModal.showPassword = !updateModal.showPassword">
-                        <i v-if="updateModal.showPassword" class="fa fa-eye-slash"></i>
-                        <i v-else class="fa fa-eye"></i>
-                      </span>
-                  </div>
-                  <p class="input__message__error"><small>{{ updateModal.errors.password }}</small></p>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="active">Trạng thái</label>
-                <select v-model="updateModal.active" class="form-control">
-                  <option value="1">Đang hoạt động</option>
-                  <option value="0">Đã khóa</option>
-                </select>
+                <label :class="{'text-danger': updateModal.errors.daysStreak}" for="daysStreak">Số ngày liên tục</label>
+                <input v-model="updateModal.daysStreak" :class="{'is-invalid': updateModal.errors.daysStreak}"
+                       class="form-control"
+                       placeholder="Nhập số ngày liên tục" type="number"
+                       @focus="updateModal.errors.daysStreak = ''">
+                <p class="input__message__error"><small>{{ updateModal.errors.daysStreak }}</small></p>
               </div>
             </form>
           </template>
           <template v-slot:footer>
             <button class="btn btn-secondary" type="button" @click="updateModal.show = false">Đóng</button>
-            <button class="btn btn-primary" type="button" @click="updateUser">Sửa</button>
+            <button class="btn btn-primary" type="button" @click="updateAchievement">Sửa</button>
+          </template>
+        </Modal>
+        <Modal :show="deleteModal.show" @close="deleteModal.show = false">
+          <template v-slot:header>
+            <h4>Xóa thành tựu</h4>
+          </template>
+          <template>
+            <p>Bạn có chắc chắn muốn xóa thành tựu này?</p>
+          </template>
+          <template v-slot:footer>
+            <button class="btn btn-secondary" type="button" @click="deleteModal.show = false">Đóng</button>
+            <button class="btn btn-danger" type="button" @click="deleteAchievement">Xóa</button>
           </template>
         </Modal>
       </div>
@@ -190,12 +148,12 @@ import axios from 'axios'
 import Modal from '@/components/Modal.vue'
 
 export default {
-  name: 'users',
+  name: 'achievements',
   components: { Modal, SearchCustom },
   data () {
     return {
       store,
-      users: [],
+      achievements: [],
       pageNo: this.$route.query.page || 1,
       pageSize: this.$route.query.size || 5,
       sortDir: this.$route.query.sortDir || 'DESC',
@@ -205,59 +163,44 @@ export default {
       total: 0,
       createModal: {
         show: false,
-        username: '',
         name: '',
-        email: '',
-        password: '',
-        hasNewPassword: true,
-        role: 'admin',
-        showPassword: false,
+        message: '',
+        daysStreak: 0,
         errors: {
-          username: '',
           name: '',
-          email: '',
-          password: ''
+          message: '',
+          daysStreak: ''
         }
       },
       updateModal: {
         show: false,
         id: '',
-        username: '',
         name: '',
-        email: '',
-        password: '',
-        hasNewPassword: false,
-        showPassword: false,
-        active: false,
+        message: '',
+        daysStreak: 0,
         errors: {
-          username: '',
           name: '',
-          email: '',
-          password: ''
+          message: '',
+          daysStreak: ''
         }
+      },
+      deleteModal: {
+        show: false,
+        id: '',
       },
       loading: false,
     }
   },
   async created () {
-    await this.searchUsers('', '')
+    await this.searchAchievements('', '')
   },
   methods: {
-    getRoles (roles) {
-      if (!roles) return 'Người dùng'
-      for (let i = 0; i < roles.length; i++) {
-        if (roles[i].name === 'ROLE_ADMIN') {
-          return 'Quản trị viên'
-        }
-      }
-      return 'Người dùng'
-    },
-    async searchUsers (tagId, keyword) {
+    async searchAchievements (tagId, keyword) {
       this.keyword = keyword
-      this.getUsers()
+      this.getAchievements()
     },
-    async getUsers() {
-      let url = this.$appConfig.apiBaseUrl + `/quiz/api/users?pageNo=${this.pageNo - 1}&pageSize=${this.pageSize}&sortDir=${this.sortDir}&sortName=${this.sortName}`
+    async getAchievements() {
+      let url = this.$appConfig.apiBaseUrl + `/quiz/api/achievements/configs?pageNo=${this.pageNo - 1}&pageSize=${this.pageSize}&sortDir=${this.sortDir}&sortName=${this.sortName}`
       if (this.keyword) {
         url += `&content=${this.keyword}`
       }
@@ -267,7 +210,7 @@ export default {
           'Authorization': `Bearer ${store.token}`
         }
       }).then(res => {
-        this.users = res.data.data.items
+        this.achievements = res.data.data.items
         this.totalPage = res.data.data.totalPage
         this.total = res.data.data.totalElements
       }).catch(err => {
@@ -276,55 +219,41 @@ export default {
         this.loading = false
       })
     },
-    validateForm (formData) {
-      const { username, name, email, password, hasNewPassword } = formData
-      if (!username) {
-        this.createModal.errors.username = 'Vui lòng nhập tên đăng nhập'
-        return false
-      }
-      if (username.length < 4) {
-        this.createModal.errors.username = 'Tên đăng nhập phải có ít nhất 4 ký tự'
-        return false
-      }
+    validateForm (formData, type = 'create') {
+      const { name, message, daysStreak } = formData
       if (!name) {
-        this.createModal.errors.name = 'Vui lòng nhập tên'
+        this[type + 'Modal'].errors.name = 'Vui lòng nhập tên thành tựu'
         return false
       }
       if (name.length < 4) {
-        this.createModal.errors.name = 'Tên phải có ít nhất 4 ký tự'
+        this[type + 'Modal'].errors.name = 'Tên thành tựu phải có ít nhất 4 ký tự'
         return false
       }
-      if (!email) {
-        this.createModal.errors.email = 'Vui lòng nhập email'
+      if (!message) {
+        this[type + 'Modal'].errors.message = 'Vui lòng nhập thông báo'
         return false
       }
-      // using regex to check email
-      const regex = /\S+@\S+\.\S+/
-      if (!regex.test(email)) {
-        this.createModal.errors.email = 'Email không hợp lệ'
+      if (message.length < 4) {
+        this[type + 'Modal'].errors.message = 'Thông báo phải có ít nhất 4 ký tự'
         return false
       }
-      if (hasNewPassword) {
-        if (!password) {
-          this.createModal.errors.password = 'Vui lòng nhập mật khẩu'
-          return false
-        }
-        if (password.length < 6) {
-          this.createModal.errors.password = 'Mật khẩu phải có ít nhất 6 ký tự'
-          return false
-        }
+      if (!daysStreak) {
+        this[type + 'Modal'].errors.daysStreak = 'Vui lòng nhập số ngày liên tục'
+        return false
+      }
+      if (daysStreak < 1) {
+        this[type + 'Modal'].errors.daysStreak = 'Số ngày liên tục phải lớn hơn 0'
+        return false
       }
       return true
     },
-    createUser () {
+    createAchievement () {
       if (!this.validateForm(this.createModal)) return
-      const { username, name, email, password, role } = this.createModal
-      axios.post(this.$appConfig.apiBaseUrl + '/quiz/api/users', {
-        username,
+      const { name, message, daysStreak } = this.createModal
+      axios.post(this.$appConfig.apiBaseUrl + '/quiz/api/achievements/configs', {
         name,
-        email,
-        password,
-        role: [role]
+        message,
+        daysStreak: parseInt(daysStreak)
       }, {
         headers: {
           'Authorization': `Bearer ${store.token}`
@@ -332,97 +261,97 @@ export default {
       }).then(res => {
         this.createModal.show = false
         this.resetCreateModal()
-        this.getUsers()
-        store.displaySuccess('Tạo người dùng thành công')
+        this.getAchievements()
+        store.displaySuccess('Tạo thành tựu thành công')
       }).catch(err => {
-        if (err.response.status === 400) {
+        if (err.response.status) {
           const error = err.response.data.error
           if (error) {
-            if (error.toUpperCase().includes('USERNAME')) {
-              this.createModal.errors.username = error
-            } else if (error.toUpperCase().includes('EMAIL')) {
-              this.createModal.errors.email = error
-            } else if (error.toUpperCase().includes('PASSWORD')) {
-              this.createModal.errors.password = error
+            if (error.toUpperCase().includes('MESSAGE')) {
+              this.createModal.errors.message = error
             } else if (error.toUpperCase().includes('NAME')) {
               this.createModal.errors.name = error
             } else {
-              this.createModal.errors.username = error
+              this.createModal.errors.daysStreak = error
             }
           }
         } else {
-          this.createModal.errors.username = 'Có lỗi xảy ra. Vui lòng thử lại'
+          this.createModal.errors.name = 'Có lỗi xảy ra. Vui lòng thử lại'
         }
       })
     },
     resetCreateModal () {
-      this.createModal.username = ''
       this.createModal.name = ''
-      this.createModal.email = ''
-      this.createModal.password = ''
-      this.createModal.role = 'user'
-      this.createModal.showPassword = false
-      this.createModal.errors.username = ''
+      this.createModal.message = ''
+      this.createModal.daysStreak = 0
       this.createModal.errors.name = ''
-      this.createModal.errors.email = ''
-      this.createModal.errors.password = ''
+      this.createModal.errors.message = ''
+      this.createModal.errors.daysStreak = ''
     },
-    showUpdateModal (user) {
-      this.updateModal.id = user.id
-      this.updateModal.username = user.username
-      this.updateModal.name = user.name
-      this.updateModal.email = user.email
-      this.updateModal.active = user.active
-      this.updateModal.showPassword = false
-      this.updateModal.hasNewPassword = false
-      this.updateModal.errors.username = ''
+    showUpdateModal (achievement) {
+      this.updateModal.id = achievement.id
+      this.updateModal.name = achievement.name
+      this.updateModal.message = achievement.message
+      this.updateModal.daysStreak = achievement.daysStreak
       this.updateModal.errors.name = ''
-      this.updateModal.errors.email = ''
-      this.updateModal.errors.password = ''
+      this.updateModal.errors.message = ''
+      this.updateModal.errors.daysStreak = ''
       this.updateModal.show = true
     },
-    updateUser () {
-      if (!this.validateForm(this.updateModal)) return
-      const { id, name, email, password, hasNewPassword, active } = this.updateModal
+    updateAchievement () {
+      if (!this.validateForm(this.updateModal, 'update')) return
+      const { id, name, message, daysStreak } = this.updateModal
       let data = {
         name,
-        email,
-        active: parseInt(active)
+        message,
+        daysStreak: parseInt(daysStreak)
       }
-      if (hasNewPassword) {
-        data.password = password
-      }
-      axios.put(this.$appConfig.apiBaseUrl + `/quiz/api/users/${id}`, data, {
+      axios.put(this.$appConfig.apiBaseUrl + `/quiz/api/achievements/configs/${id}`, data, {
         headers: {
           'Authorization': `Bearer ${store.token}`
         }
       }).then(res => {
         this.updateModal.show = false
-        this.getUsers()
-        store.displaySuccess('Cập nhật người dùng thành công')
+        this.getAchievements()
+        store.displaySuccess('Cập nhật thành tựu thành công')
       }).catch(err => {
-        if (err.response.status === 400) {
+        if (err.response.status) {
           const error = err.response.data.error
           if (error) {
-            if (error.toUpperCase().includes('EMAIL')) {
-              this.updateModal.errors.email = error
-            } else if (error.toUpperCase().includes('PASSWORD')) {
-              this.updateModal.errors.password = error
+            if (error.toUpperCase().includes('MESSAGE')) {
+              this.updateModal.errors.message = error
             } else if (error.toUpperCase().includes('NAME')) {
               this.updateModal.errors.name = error
             } else {
-              this.updateModal.errors.username = error
+              this.updateModal.errors.daysStreak = error
             }
           }
         } else {
           this.update.errors.name = 'Có lỗi xảy ra. Vui lòng thử lại'
         }
       })
-    }
+    },
+    showDeleteAchievementModal (id) {
+      this.deleteModal.show = true
+      this.deleteModal.id = id
+    },
+    deleteAchievement () {
+      axios.delete(this.$appConfig.apiBaseUrl + `/quiz/api/achievements/configs/${this.deleteModal.id}`, {
+        headers: {
+          'Authorization': `Bearer ${store.token}`
+        }
+      }).then(res => {
+        this.deleteModal.show = false
+        this.getAchievements()
+        store.displaySuccess('Xóa thành tựu thành công')
+      }).catch(err => {
+        store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
+      })
+    },
   },
   watch: {
     pageNo (val) {
-      this.getUsers()
+      this.getAchievements()
     },
   },
 }
