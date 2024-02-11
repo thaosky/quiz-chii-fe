@@ -4,6 +4,15 @@
       <div class="row justify-content-center">
         <Title>
           Danh sách quiz
+          <template v-slot:right-item>
+            <div class="position-relative achievement-wrapper">
+              <div class="position-absolute w-100 h-100 achievement-background"></div>
+              <div class="position-a w-75 achievement">
+                <div class="achievement-title">Bạn đã học liên tục</div>
+                <div class="achievement-count">{{ achievement }} ngày</div>
+              </div>
+            </div>
+          </template>
         </Title>
         <section class="section section-lg pt-lg-0 w-100" style="margin-top: 200px">
           <div class="container">
@@ -124,10 +133,12 @@ export default {
       },
       tagList: [],
       loading: false,
+      achievement: 0,
     }
   },
   async created () {
     this.getTests()
+    this.getAchievementCount()
     await axios.get(this.$appConfig.apiBaseUrl + '/quiz/api/tags?pageSize=100000&pageNo=0')
         .then(res => {
           this.tagList = res.data.data.items
@@ -142,6 +153,22 @@ export default {
         return content.substring(0, 30) + '...'
       }
       return content
+    },
+    async getAchievementCount() {
+      if (store.token) {
+        await axios.get(this.$appConfig.apiBaseUrl + `/quiz/api/achievements/?pageNo=0&pageSize=10000`, {
+          headers: {
+            Authorization: `Bearer ${store.token}`
+          }
+        }).then(res => {
+          const latestAchievement = res.data.data.items[0]
+          if (latestAchievement) {
+            this.achievement = latestAchievement.name
+          }
+        }).catch(err => {
+          store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
+        })
+      }
     },
     async getTests () {
       let url = this.$appConfig.apiBaseUrl + `/quiz/api/tests?pageNo=${this.pageNo - 1}&pageSize=${this.pageSize}&sortDir=${this.sortDir}&sortName=${this.sortName}`
@@ -197,3 +224,31 @@ export default {
   }
 }
 </script>
+<style scoped>
+.achievement-wrapper {
+  padding-bottom: 51%
+}
+
+.achievement-background {
+  background-image: url('/img/media/achievement-badge.svg');
+  background-size: cover;
+}
+
+.achievement {
+  left: 50%;
+  top: 50%;
+  text-align: center;
+  transform: translate(-52%, -40%);
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.achievement-title {
+  color: #23ac38;
+  margin-bottom: 5px;
+}
+
+.achievement-count {
+  color: #ee9b1f;
+}
+</style>

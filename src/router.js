@@ -6,10 +6,8 @@ import Register from './views/Register.vue'
 import TestIndex from './views/tests/index.vue'
 import EmptyHeader from '@/layout/empty/EmptyHeader.vue'
 import EmptyFooter from '@/layout/empty/EmptyFooter.vue'
-import AdminHeader from '@/layout/admin/AdminHeader.vue'
-import AdminFooter from '@/layout/admin/AdminFooter.vue'
-import UserHeader from '@/layout/user/UserHeader.vue'
-import UserFooter from '@/layout/user/UserFooter.vue'
+import AppHeader from "@/layout/AppHeader.vue";
+import AppFooter from "@/layout/AppFooter.vue";
 
 Vue.use(Router)
 
@@ -29,63 +27,63 @@ export default new Router({
       path: '/tests',
       name: 'tests',
       components: {
-        header: UserHeader,
+        header: AppHeader,
         default: TestIndex,
-        footer: UserFooter
+        footer: AppFooter
       }
     },
     {
       path: '/tests/create',
       name: 'tests.create',
       components: {
-        header: AdminHeader,
+        header: AppHeader,
         default: () => import('@/views/tests/create.vue'),
-        footer: AdminFooter
+        footer: AppFooter
       }
     },
     {
       path: '/tests/:id/edit',
       name: 'tests.edit',
       components: {
-        header: AdminHeader,
+        header: AppHeader,
         default: () => import('@/views/tests/edit.vue'),
-        footer: AdminFooter
+        footer: AppFooter
       }
     },
     {
       path: '/tests/:id',
       name: 'tests.detail',
       components: {
-        header: UserHeader,
+        header: AppHeader,
         default: () => import('@/views/tests/detail.vue'),
-        footer: UserFooter
+        footer: AppFooter
       }
     },
     {
       path: '/tests/:id/start',
       name: 'tests.start',
       components: {
-        header: UserHeader,
+        header: AppHeader,
         default: () => import('@/views/tests/start.vue'),
-        footer: UserFooter
+        footer: AppFooter
       }
     },
     {
       path: '/questions',
       name: 'questions',
       components: {
-        header: AdminHeader,
+        header: AppHeader,
         default: () => import('@/views/questions/index.vue'),
-        footer: AdminFooter
+        footer: AppFooter
       }
     },
     {
       path: '/tags',
       name: 'tags',
       components: {
-        header: AdminHeader,
+        header: AppHeader,
         default: () => import('@/views/tags/index.vue'),
-        footer: AdminFooter
+        footer: AppFooter
       }
     },
     {
@@ -110,72 +108,72 @@ export default new Router({
       path: '/users',
       name: 'users',
       components: {
-        header: AdminHeader,
+        header: AppHeader,
         default: () => import('@/views/users/index.vue'),
-        footer: AdminFooter
+        footer: AppFooter
       }
     },
     {
       path: '/achievements',
       name: 'achievements',
       components: {
-        header: AdminHeader,
+        header: AppHeader,
         default: () => import('@/views/achievements/index.vue'),
-        footer: AdminFooter
+        footer: AppFooter
       }
     },
     {
       path: '/users/profile',
       name: 'user-profile',
       components: {
-        header: UserHeader,
+        header: AppHeader,
         default: () => import('@/views/users/Profile.vue'),
-        footer: UserFooter
+        footer: AppFooter
       }
     },
     {
       path: '/users/profile/change-password',
       name: 'user-password',
       components: {
-        header: UserHeader,
+        header: AppHeader,
         default: () => import('@/views/users/Password.vue'),
-        footer: UserFooter
+        footer: AppFooter
       }
     },
     {
       path: '/statistics',
       name: 'statistics',
       components: {
-        header: AdminHeader,
+        header: AppHeader,
         default: () => import('@/views/statistics/index.vue'),
-        footer: AdminFooter
+        footer: AppFooter
       }
     },
     {
       path: '/statistics/my-results',
       name: 'statistics.my-results',
       components: {
-        header: UserHeader,
+        header: AppHeader,
         default: () => import('@/views/statistics/my-results.vue'),
-        footer: UserFooter
+        footer: AppFooter
       }
     },
     {
       path: '/statistics/quiz/:id',
       name: 'statistics.test',
       components: {
-        header: AdminHeader,
+        header: AppHeader,
         default: () => import('@/views/statistics/quiz.vue'),
-        footer: AdminFooter
+        footer: AppFooter
       }
     },
     {
       path: '/statistics/:id',
       name: 'statistics-detail',
       components: {
-        header: UserHeader,
+        header: AppHeader,
         default: () => import('@/views/statistics/detail.vue'),
-        footer: UserFooter
+        footer: AppFooter
       }
     },
   ],

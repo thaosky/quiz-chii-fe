@@ -77,6 +77,38 @@
                 </router-link>
               </div>
             </div>
+            <div v-else-if="store.isLoggedIn()" class="row menu">
+              <div class="col p-0 text-center menu-item" :class="{active: $route.path.includes('tests')}">
+                <router-link to="/tests">
+                  <div class="menu-item-box text-center w-100 text-dark">
+                    <img src="img/theme/quiz.png" alt="">
+                    <p class="mb-0">
+                      Quiz
+                    </p>
+                  </div>
+                </router-link>
+              </div>
+              <div class="col p-0 text-center menu-item" :class="{active: $route.path.includes('statistics')}">
+                <router-link to="/statistics/my-results">
+                  <div class="menu-item-box text-center w-100 text-dark">
+                    <img src="img/theme/analysis.png" alt="">
+                    <p class="mb-0">
+                      Lịch sử làm bài
+                    </p>
+                  </div>
+                </router-link>
+              </div>
+              <div class="col p-0 text-center menu-item" :class="{active: $route.path.includes('achievements')}">
+                <router-link to="/achievements">
+                  <div class="menu-item-box text-center w-100 text-dark">
+                    <img src="img/theme/achievement.png" alt="">
+                    <p class="mb-0">
+                      Thành tựu
+                    </p>
+                  </div>
+                </router-link>
+              </div>
+            </div>
             <div v-else style="height: 68px"></div>
           </div>
           <div class="col-3 _col-3 position-r">
