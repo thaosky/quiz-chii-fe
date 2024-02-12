@@ -20,7 +20,7 @@
                 <th scope="col">Chọn</th>
                 <th scope="col">Nội dung</th>
                 <th scope="col">Câu hỏi</th>
-                <th scope="col">Đáp án</th>
+                <th scope="col">Phương án đúng</th>
                 <th scope="col">Tags</th>
               </tr>
               </thead>

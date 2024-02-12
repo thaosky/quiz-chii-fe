@@ -28,7 +28,7 @@
                     <th scope="col">Nội dung</th>
                     <th scope="col">Câu hỏi</th>
                     <th v-if="store.isAdmin()" scope="col" style="width: 90px">
-                      Đáp án
+                      Phương án đúng
                     </th>
                     <th scope="col" style="min-width: 130px">Giải thích</th>
                     <th scope="col" style="min-width: 130px">Tags</th>
@@ -107,21 +107,21 @@
               </div>
               <div class="form-row">
                 <div class="form-group col-md-6">
-                  <label for="answer1">Đáp án A</label>
+                  <label for="answer1">Phương án A</label>
                   <wysiwyg v-model="createModal.answer1" class="form-control" required style="min-height: 150px;"/>
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="answer2">Đáp án B</label>
+                  <label for="answer2">Phương án B</label>
                   <wysiwyg v-model="createModal.answer2" class="form-control" required style="min-height: 150px;"/>
                 </div>
               </div>
               <div class="form-row">
                 <div class="form-group col-md-6">
-                  <label for="answer3">Đáp án C</label>
+                  <label for="answer3">Phương án C</label>
                   <wysiwyg v-model="createModal.answer3" class="form-control" required style="min-height: 150px;"/>
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="answer4">Đáp án D</label>
+                  <label for="answer4">Phương án D</label>
                   <wysiwyg v-model="createModal.answer4" class="form-control" required style="min-height: 150px;"/>
                 </div>
               </div>
@@ -131,7 +131,7 @@
                   <wysiwyg v-model="createModal.explanation" class="form-control" required style="min-height: 150px;"/>
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="correctAnswer">Đáp án đúng</label>
+                  <label for="correctAnswer">Phương án đúng</label>
                   <select v-model="createModal.correctAnswer" class="form-control" required>
                     <option value="1">A</option>
                     <option value="2">B</option>
@@ -204,21 +204,21 @@
               </div>
               <div class="form-row">
                 <div class="form-group col-md-6">
-                  <label for="answer1">Đáp án A</label>
+                  <label for="answer1">Phương án A</label>
                   <wysiwyg v-model="updateModal.answer1" class="form-control" required style="min-height: 150px;"/>
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="answer2">Đáp án B</label>
+                  <label for="answer2">Phương án B</label>
                   <wysiwyg v-model="updateModal.answer2" class="form-control" required style="min-height: 150px;"/>
                 </div>
               </div>
               <div class="form-row">
                 <div class="form-group col-md-6">
-                  <label for="answer3">Đáp án C</label>
+                  <label for="answer3">Phương án C</label>
                   <wysiwyg v-model="updateModal.answer3" class="form-control" required style="min-height: 150px;"/>
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="answer4">Đáp án D</label>
+                  <label for="answer4">Phương án D</label>
                   <wysiwyg v-model="updateModal.answer4" class="form-control" required style="min-height: 150px;"/>
                 </div>
               </div>
@@ -228,7 +228,7 @@
                   <wysiwyg v-model="updateModal.explanation" class="form-control" required style="min-height: 150px;"/>
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="correctAnswer">Đáp án đúng</label>
+                  <label for="correctAnswer">Phương án đúng</label>
                   <select v-model="updateModal.correctAnswer" class="form-control" required>
                     <option value="1">A</option>
                     <option value="2">B</option>
