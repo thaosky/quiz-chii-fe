@@ -4,7 +4,7 @@
       <div class="row justify-content-center" style="margin-top: 68px;min-height: calc(100vh - 128px)">
         <div class="col-3 _col-1 position-r">
           <div class="position-a" style="left: 0; top: 30%; width: 80%; max-width: 180px">
-            <img src="https://learn.mochidemy.com/image/213202355_4534422609904130_3896387388468451408_n_1.png"
+            <img src="img/theme/cloud1.png"
                  style="width: 100%">
           </div>
         </div>
@@ -95,7 +95,7 @@
                  style="width: 100%">
           </div>
           <div class="position-a" style="right: 0; top: 50%; width: 80%">
-            <img src="https://learn.mochidemy.com/image/213202355_4534422609904130_3896387388468451408_n.png.webp"
+            <img src="img/theme/cloud8.webp"
                  style="width: 100%">
           </div>
           <div v-if="result" class="result-questions">

@@ -25,15 +25,15 @@
           </div>
         </div>
         <div style="position:absolute; left: -130px; top: 60%; width: 80%; max-width: 300px">
-          <img src="https://learn.mochidemy.com/image/213202355_4534422609904130_3896387388468451408_n.png.webp"
+          <img src="img/theme/cloud8.webp"
                style="width: 100%; opacity: 0.4">
         </div>
         <div style="position:absolute; right: -100px; top: 10px; width: 80%; max-width: 300px">
-          <img src="https://learn.mochidemy.com/image/213202355_4534422609904130_3896387388468451408_n.png.webp"
+          <img src="img/theme/cloud8.webp"
                style="width: 100%; opacity: 0.4">
         </div>
         <div style="position:absolute; right: -50px; bottom: 0; width: 80%; max-width: 300px">
-          <img src="https://learn.mochidemy.com/image/213202355_4534422609904130_3896387388468451408_n.png.webp"
+          <img src="img/theme/cloud8.webp"
                style="width: 100%; opacity: 0.4">
         </div>
       </div>

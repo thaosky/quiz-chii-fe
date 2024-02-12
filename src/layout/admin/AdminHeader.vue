@@ -86,12 +86,12 @@
                 </span>
               </div>
               <div class="menu-avatar"
-                   style="background: url(https://learn.mochidemy.com/image/0c0722e80c76ce7315418a18480e28d8.png); background-size: cover;">
+                   style="background: url(img/theme/avatar.png); background-size: cover;">
               </div>
               <div :class="showDropDown ? 'icon-menu-dropdown-open' : 'icon-menu-dropdown-close'"
                    @click="showDropDown = !showDropDown"
               >
-                <img src="https://learn.mochidemy.com/svg/dropdown_menu.svg">
+                <img src="img/theme/dropdown_menu.svg">
               </div>
             </div>
           </div>
@@ -102,7 +102,7 @@
                   <span class="p-dropdown vertical-center">
                     Cài đặt tài khoản
                   </span>
-                  <img src="https://learn.mochidemy.com/image/98713df50c21cbe016386923bf65dc97.png" alt="">
+                  <img src="img/theme/setting.png" alt="">
                 </div>
               </router-link>
               <router-link to="/users/profile/change-password" class="btn-setting">
@@ -118,7 +118,7 @@
                   <span class="p-dropdown vertical-center">
                     Lịch sử làm bài
                   </span>
-                  <img src="https://learn.mochidemy.com/image/c40f2d0a61141a0fd73106c254f8d7aa.png" alt="">
+                  <img src="img/theme/cup.png" alt="">
                 </div>
               </router-link>
               <a href="javascript:" class="btn-setting"

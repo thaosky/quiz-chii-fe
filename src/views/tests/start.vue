@@ -4,7 +4,7 @@
       <div class="row justify-content-center" style="margin-top: 68px;min-height: calc(100vh - 128px)">
         <div class="col-3 _col-1 position-r">
           <div class="position-a" style="left: 0; top: 30%; width: 80%; max-width: 180px">
-            <img src="https://learn.mochidemy.com/image/213202355_4534422609904130_3896387388468451408_n_1.png"
+            <img src="img/theme/cloud1.png"
                  style="width: 100%">
           </div>
           <div v-if="availableTime" class="result-questions" style="position: absolute; right: 15px">
@@ -28,7 +28,7 @@
                 </div>
               </div>
               <div class="col-2 text-center">
-                <img src="https://learn.mochidemy.com/svg/close_game.svg" style="width: 25px; cursor: pointer"
+                <img src="img/theme/close_game.svg" style="width: 25px; cursor: pointer"
                      @click="endTestEarly">
               </div>
             </div>
@@ -107,7 +107,7 @@
                  style="width: 100%">
           </div>
           <div class="position-a" style="right: 0; top: 50%; width: 80%">
-            <img src="https://learn.mochidemy.com/image/213202355_4534422609904130_3896387388468451408_n.png.webp"
+            <img src="img/theme/cloud8.webp"
                  style="width: 100%">
           </div>
           <div class="result-questions">
@@ -131,10 +131,10 @@
          :style="{'display': endEarlyModalShow ? 'block' : 'none'}">
       <div id="popupReview" class="popup-modal bg-white text-center" style="">
         <div class="w-100 text-center popup-modal-image position-a" style="z-index: -1">
-          <img alt="image popup" src="https://learn.mochidemy.com/image/ea34698fbeae819618073bb7e0298139.png">
+          <img alt="image popup" src="img/theme/cry.png">
         </div>
         <div id="close-popup" class="position-a close-popup-modal" @click="endEarlyModalShow = false">
-          <img alt="close" src="https://learn.mochidemy.com/svg/close.svg">
+          <img alt="close" src="img/theme/close.svg">
         </div>
         <div class="popup-modal-content"
              style="background: #fff; border-radius: 20px; margin-top: 20px;">
