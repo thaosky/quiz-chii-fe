@@ -28,7 +28,7 @@
                 </div>
               </div>
               <div class="col-2 text-center">
-                <img src="img/theme/close_game.svg" style="width: 25px; cursor: pointer"
+                <img src="img/theme/close_black.webp" style="width: 25px; cursor: pointer"
                      @click="endTestEarly">
               </div>
             </div>
@@ -103,7 +103,7 @@
         </div>
         <div class="col-3 _col-3 text-center position-r">
           <div class="position-a" style="right: 0; top: 0; width: 70%; max-width: 150px">
-            <img src="https://learn.mochidemy.com/image/213202355_4534422609904130_3896387388468451408_n_2.png"
+            <img src="img/theme/cloud2.png"
                  style="width: 100%">
           </div>
           <div class="position-a" style="right: 0; top: 50%; width: 80%">
