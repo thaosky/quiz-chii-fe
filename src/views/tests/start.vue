@@ -84,8 +84,8 @@
               </div>
               <div v-else class="div-submit-success div-review-next">
                 <button
-                    class="btn btn-submit-success"
-                    @click="nextQuestion"
+                  class="btn btn-submit-success"
+                  @click="nextQuestion"
                 >
                   CÂU TIẾP THEO
                 </button>
@@ -127,8 +127,8 @@
         </div>
       </div>
     </div>
-    <div class="modal-cover position-a w-100" style="position: fixed;"
-         :style="{'display': endEarlyModalShow ? 'block' : 'none'}">
+    <div :style="{'display': endEarlyModalShow ? 'block' : 'none'}" class="modal-cover position-a w-100"
+         style="position: fixed;">
       <div id="popupReview" class="popup-modal bg-white text-center" style="">
         <div class="w-100 text-center popup-modal-image position-a" style="z-index: -1">
           <img alt="image popup" src="img/theme/cry.png">
@@ -224,26 +224,36 @@ export default {
     },
     async getQuestions() {
       axios.get(this.$appConfig.apiBaseUrl + '/quiz/api/tests/' + this.$route.params.id,
-          {
-            headers: {
-              'Authorization': `Bearer ${store.token}`
-            }
-          })
-          .then(response => {
-            this.questions = response.data.data.questionList
-            this.availableTime = response.data.data.availableTime * 60 // convert to seconds
+        {
+          headers: {
+            'Authorization': `Bearer ${store.token}`
+          }
+        })
+        .then(response => {
+          this.questions = response.data.data.questionList
+          this.availableTime = response.data.data.availableTime * 60 // convert to seconds
+          if (response.data.data.testType === 'ONCE_WITH_TIME') {
+            this.startedTime = response.data.data.startTime
+            this.passedTime = Math.floor((new Date() - new Date(this.startedTime)) / 1000)
+          } else {
             this.startedTime = new Date().toISOString().slice(0, 19).replace('T', ' ')
             this.totalQuestions = this.questions.length
-            this.testName = response.data.data.name
-            // set Interval to count down. When time is up, submit test and clear interval
-            this.interval = setInterval(() => {
-              this.passedTime++
-              if (this.passedTime >= this.availableTime) {
-                this.submit()
-                clearInterval(this.interval)
-              }
-            }, 1000)
-          })
+          }
+          this.testName = response.data.data.name
+          // set Interval to count down. When time is up, submit test and clear interval
+          this.interval = setInterval(() => {
+            this.passedTime++
+            if (this.passedTime >= this.availableTime) {
+              this.submit()
+              clearInterval(this.interval)
+            }
+          }, 1000)
+        })
+        .catch(error => {
+          const errorMessage = error.response.data.error
+          store.displayError(errorMessage || 'Có lỗi xảy ra. Vui lòng thử lại sau.')
+          this.$router.push('/tests')
+        })
     },
     setAnswer(answer) {
       this.currentAnswer = answer
@@ -296,8 +306,8 @@ export default {
         }
       }).then(response => {
         if (response.data.data.firstSubmit
-            && response.data.data.messageStreak !== null
-            && response.data.data.messageStreak !== '') {
+          && response.data.data.messageStreak !== null
+          && response.data.data.messageStreak !== '') {
           this.store.displaySuccess(response.data.data.messageStreak)
         } else {
           this.store.displaySuccess('Nộp bài thành công')
