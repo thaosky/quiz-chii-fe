@@ -237,8 +237,8 @@ export default {
             this.passedTime = Math.floor((new Date() - new Date(this.startedTime)) / 1000)
           } else {
             this.startedTime = new Date().toISOString().slice(0, 19).replace('T', ' ')
-            this.totalQuestions = this.questions.length
           }
+          this.totalQuestions = this.questions.length
           this.testName = response.data.data.name
           // set Interval to count down. When time is up, submit test and clear interval
           this.interval = setInterval(() => {

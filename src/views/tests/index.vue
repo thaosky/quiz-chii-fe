@@ -60,12 +60,13 @@
                         </router-link>
                       </template>
                       <template v-if="store.isLoggedIn()">
-                        <button
+                        <router-link
+                          :to="{ name: 'tests.start', params: { id: test.id } }"
                           class="btn btn-sm btn-success"
                           :class="{ 'disabled': checkTestTimeOver(test) }"
                         >
                           Thi
-                        </button>
+                        </router-link>
                         <template v-if="store.isAdmin()">
                           <router-link
                             :to="{ name: 'tests.edit', params: { id: test.id } }"
