@@ -7,11 +7,13 @@
         </Title>
         <section class="section section-lg pt-lg-0 w-100" style="margin-top: 200px">
           <div class="container">
-            <div class="d-flex justify-content-center my-3">
+            <div class="d-flex justify-content-center my-3" v-if="store.isAdmin()">
               <SearchCustom :tags="[]" @submit="searchAchievements"></SearchCustom>
             </div>
             <div class="row mb-3" style="justify-content: end">
-              <button class="btn btn-success" @click="createModal.show=true">Thêm thành tựu</button>
+              <button v-if="store.isAdmin()" class="btn btn-success" @click="createModal.show=true">
+                Thêm thành tựu
+              </button>
             </div>
             <div class="row justify-content-center bg-white">
               <a-spin :spinning="loading" class="w-100" size="large">
@@ -20,19 +22,21 @@
                   <tr>
                     <th scope="col">Tên thành tựu</th>
                     <th scope="col">Thông báo</th>
-                    <th scope="col">Số ngày liên tục</th>
-                    <th scope="col"></th>
+                    <th scope="col" v-if="store.isAdmin()">Số ngày liên tục</th>
+                    <th scope="col" v-if="store.isAdmin()"></th>
+                    <th scope="col" v-if="store.isLoggedIn() && !store.isAdmin()">Thời gian đạt được</th>
                   </tr>
                   </thead>
                   <tbody>
                   <tr v-for="achievement in achievements" :key="achievement.id">
                     <td>{{ achievement.name }}</td>
                     <td>{{ achievement.message }}</td>
-                    <td>{{ achievement.daysStreak }}</td>
-                    <td>
+                    <td v-if="store.isAdmin()">{{ achievement.daysStreak }}</td>
+                    <td v-if="store.isAdmin()">
                       <button class="btn btn-sm btn-primary" @click="showUpdateModal(achievement)">Sửa</button>
                       <button class="btn btn-sm btn-danger" @click="showDeleteAchievementModal(achievement.id)">Xóa</button>
                     </td>
+                    <td v-if="store.isLoggedIn() && !store.isAdmin()">{{ achievement.timeAchieved }}</td>
                   </tr>
                   </tbody>
                 </table>
@@ -200,7 +204,13 @@ export default {
       this.getAchievements()
     },
     async getAchievements() {
-      let url = this.$appConfig.apiBaseUrl + `/quiz/api/achievements/configs?pageNo=${this.pageNo - 1}&pageSize=${this.pageSize}&sortDir=${this.sortDir}&sortName=${this.sortName}`
+      if (!store.isLoggedIn()) return
+      let url = ''
+      if (!store.isAdmin()) {
+        url = this.$appConfig.apiBaseUrl + `/quiz/api/achievements?pageNo=${this.pageNo - 1}&pageSize=${this.pageSize}&sortDir=${this.sortDir}&sortName=${this.sortName}`
+      } else {
+        url = this.$appConfig.apiBaseUrl + `/quiz/api/achievements/configs?pageNo=${this.pageNo - 1}&pageSize=${this.pageSize}&sortDir=${this.sortDir}&sortName=${this.sortName}`
+      }
       if (this.keyword) {
         url += `&content=${this.keyword}`
       }

@@ -55,20 +55,22 @@
                     <td style="display: flex; justify-content: center">
                       <template v-if="!store.isLoggedIn()">
                         <router-link
-                            :to="{ name: 'tests.detail', params: { id: test.id } }"
-                            class="btn btn-sm btn-neutral">Xem
+                          :to="{ name: 'tests.detail', params: { id: test.id } }"
+                          class="btn btn-sm btn-neutral">Xem
                         </router-link>
                       </template>
                       <template v-if="store.isLoggedIn()">
                         <router-link
-                            :to="{ name: 'tests.start', params: { id: test.id } }"
-                            class="btn btn-sm btn-success">
+                          :to="{ name: 'tests.start', params: { id: test.id } }"
+                          class="btn btn-sm btn-success"
+                          :class="{ 'disabled': checkTestTimeOver(test) }"
+                        >
                           Thi
                         </router-link>
                         <template v-if="store.isAdmin()">
                           <router-link
-                              :to="{ name: 'tests.edit', params: { id: test.id } }"
-                              class="btn btn-sm btn-primary">Sửa
+                            :to="{ name: 'tests.edit', params: { id: test.id } }"
+                            class="btn btn-sm btn-primary">Sửa
                           </router-link>
                           <button class="btn btn-sm btn-danger" @click="showDeleteModal(test)">Xóa</button>
                         </template>
@@ -105,15 +107,16 @@
 
 <script>
 import axios from 'axios'
-import { store } from '@/store'
+import {store} from '@/store'
 import ButtonSubmitSuccess from '@/components/ButtonSubmitSuccess.vue'
 import SearchCustom from '@/components/SearchCustom.vue'
 import Modal from '@/components/Modal.vue'
+import moment from "moment";
 
 export default {
   name: 'tests',
-  components: { Modal, SearchCustom, ButtonSubmitSuccess },
-  data () {
+  components: {Modal, SearchCustom, ButtonSubmitSuccess},
+  data() {
     return {
       store,
       tests: [],
@@ -134,21 +137,25 @@ export default {
       tagList: [],
       loading: false,
       achievement: 0,
+      now: moment(),
     }
   },
-  async created () {
+  async created() {
     this.getTests()
     this.getAchievementCount()
     await axios.get(this.$appConfig.apiBaseUrl + '/quiz/api/tags?pageSize=100000&pageNo=0')
-        .then(res => {
-          this.tagList = res.data.data.items
-        })
-        .catch(err => {
-          store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
-        })
+      .then(res => {
+        this.tagList = res.data.data.items
+      })
+      .catch(err => {
+        store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
+      })
+    setInterval(() => {
+      this.now = moment()
+    }, 1000)
   },
   methods: {
-    shortenContent (content) {
+    shortenContent(content) {
       if (content.length > 30) {
         return content.substring(0, 30) + '...'
       }
@@ -170,7 +177,7 @@ export default {
         })
       }
     },
-    async getTests () {
+    async getTests() {
       let url = this.$appConfig.apiBaseUrl + `/quiz/api/tests?pageNo=${this.pageNo - 1}&pageSize=${this.pageSize}&sortDir=${this.sortDir}&sortName=${this.sortName}`
       if (this.tagId) {
         url += `&tagId=${this.tagId}`
@@ -192,16 +199,24 @@ export default {
         this.loading = false
       })
     },
-    async searchByTag (tagId, keyword) {
+    checkTestTimeOver(test) {
+      if (test.testType === 'ONCE_WITH_TIME') {
+        // check if the time is already over using moment
+        const endTime = moment(test.endTime, 'DD/MM/YYYY HH:mm')
+        return this.now.isAfter(endTime)
+      }
+      return false
+    },
+    async searchByTag(tagId, keyword) {
       this.tagId = tagId
       this.keyword = keyword
       await this.getTests()
     },
-    showDeleteModal (test) {
+    showDeleteModal(test) {
       this.deleteModal.show = true
       this.deleteModal.id = test.id
     },
-    deleteTest () {
+    deleteTest() {
       axios.delete(this.$appConfig.apiBaseUrl + `/quiz/api/tests/${id}`, {
         headers: {
           Authorization: `Bearer ${store.token}`

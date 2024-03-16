@@ -58,6 +58,8 @@ export default {
   justify-content: space-between;
   align-items: center;
   border-radius: 8px;
+  position: relative;
+  z-index: 200;
 }
 
 .search__left {

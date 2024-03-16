@@ -10,11 +10,18 @@
             <div class="d-flex justify-content-center my-3">
               <SearchCustom :tags="tagList" @submit="searchByTag"></SearchCustom>
             </div>
-            <div v-if="store.isAdmin()" class="row mb-3" style="justify-content: end">
-              <button class="btn btn-success" @click="createModal.show = true">Thêm câu hỏi</button>
-              <label class="btn btn-success mb-0" for="uploadFile">Upload file</label>
-              <input id="uploadFile" accept=".xlsx" style="display: none" type="file" @change="onFileChange">
-              <button class="btn btn-danger" @click="deleteModal.show = true">Xoá</button>
+            <div v-if="store.isAdmin()" class="row mb-3" style="justify-content: space-between">
+              <button
+                class="btn btn-outline-success mb-0"
+                @click="downloadTemplate"
+              >Download template
+              </button>
+              <div>
+                <button class="btn btn-success" @click="createModal.show = true">Thêm câu hỏi</button>
+                <label class="btn btn-success mb-0" for="uploadFile">Upload file</label>
+                <input id="uploadFile" accept=".xlsx" style="display: none" type="file" @change="onFileChange">
+                <button class="btn btn-danger" @click="deleteModal.show = true">Xoá</button>
+              </div>
             </div>
             <div class="row justify-content-center bg-white">
               <a-spin :spinning="loading" class="w-100" size="large">
@@ -27,7 +34,7 @@
                     </th>
                     <th scope="col">Nội dung</th>
                     <th scope="col">Câu hỏi</th>
-                    <th v-if="store.isAdmin()" scope="col" style="width: 90px">
+                    <th v-if="store.isAdmin()" scope="col" style="width: 160px">
                       Phương án đúng
                     </th>
                     <th scope="col" style="min-width: 130px">Giải thích</th>
@@ -61,12 +68,12 @@
                     <td>
                       <template v-if="store.isAdmin()">
                         <button
-                            class="btn btn-sm btn-success"
-                            @click="showCopyQuestionModal(question)">COPY
+                          class="btn btn-sm btn-success"
+                          @click="showCopyQuestionModal(question)">COPY
                         </button>
                         <button
-                            class="btn btn-sm btn-primary"
-                            @click="showEditQuestionModal(question)">Sửa
+                          class="btn btn-sm btn-primary"
+                          @click="showEditQuestionModal(question)">Sửa
                         </button>
                       </template>
                     </td>
@@ -144,28 +151,28 @@
                 <div class="form-group col-md-12">
                   <label for="tags">Tags</label>
                   <b-form-tags
-                      id="tags-component-select"
-                      v-model="createModal.selectedTags"
-                      add-on-change
-                      class="mb-2"
-                      no-outer-focus
+                    id="tags-component-select"
+                    v-model="createModal.selectedTags"
+                    add-on-change
+                    class="mb-2"
+                    no-outer-focus
                   >
                     <template v-slot="{ tags, inputAttrs, inputHandlers, disabled, removeTag }">
                       <ul v-if="tags.length > 0" class="list-inline d-inline-block mb-2">
                         <li v-for="tag in tags" :key="tag" class="list-inline-item">
                           <b-form-tag
-                              :disabled="disabled"
-                              :title="tag"
-                              @remove="removeTag(tag)"
+                            :disabled="disabled"
+                            :title="tag"
+                            @remove="removeTag(tag)"
                           >{{ tag }}
                           </b-form-tag>
                         </li>
                       </ul>
                       <b-form-select
-                          :disabled="disabled || availableCreateTags.length === 0"
-                          :options="availableCreateTags"
-                          v-bind="inputAttrs"
-                          v-on="inputHandlers"
+                        :disabled="disabled || availableCreateTags.length === 0"
+                        :options="availableCreateTags"
+                        v-bind="inputAttrs"
+                        v-on="inputHandlers"
                       >
                         <template #first>
                           <!-- This is required to prevent bugs with Safari -->
@@ -241,28 +248,28 @@
                 <div class="form-group col-md-12">
                   <label for="tags">Tags</label>
                   <b-form-tags
-                      id="tags-component-select"
-                      v-model="updateModal.selectedTags"
-                      add-on-change
-                      class="mb-2"
-                      no-outer-focus
+                    id="tags-component-select"
+                    v-model="updateModal.selectedTags"
+                    add-on-change
+                    class="mb-2"
+                    no-outer-focus
                   >
                     <template v-slot="{ tags, inputAttrs, inputHandlers, disabled, removeTag }">
                       <ul v-if="tags.length > 0" class="list-inline d-inline-block mb-2">
                         <li v-for="tag in tags" :key="tag" class="list-inline-item">
                           <b-form-tag
-                              :disabled="disabled"
-                              :title="tag"
-                              @remove="removeTag(tag)"
+                            :disabled="disabled"
+                            :title="tag"
+                            @remove="removeTag(tag)"
                           >{{ tag }}
                           </b-form-tag>
                         </li>
                       </ul>
                       <b-form-select
-                          :disabled="disabled || availableCreateTags.length === 0"
-                          :options="availableCreateTags"
-                          v-bind="inputAttrs"
-                          v-on="inputHandlers"
+                        :disabled="disabled || availableCreateTags.length === 0"
+                        :options="availableCreateTags"
+                        v-bind="inputAttrs"
+                        v-on="inputHandlers"
                       >
                         <template #first>
                           <!-- This is required to prevent bugs with Safari -->
@@ -364,29 +371,49 @@ export default {
     },
     createFormValid() {
       return this.createModal.content && this.createModal.question && this.createModal.answer1 &&
-          this.createModal.answer2 && this.createModal.answer3 && this.createModal.answer4 &&
-          this.createModal.correctAnswer && this.createModal.selectedTags.length > 0
+        this.createModal.answer2 && this.createModal.answer3 && this.createModal.answer4 &&
+        this.createModal.correctAnswer && this.createModal.selectedTags.length > 0
     },
     availableUpdateTags() {
       return this.tagNameList.filter(tag => !this.updateModal.selectedTags.includes(tag))
     },
     updateFormValid() {
       return this.updateModal.content && this.updateModal.question && this.updateModal.answer1 &&
-          this.updateModal.answer2 && this.updateModal.answer3 && this.updateModal.answer4 &&
-          this.updateModal.correctAnswer && this.updateModal.selectedTags.length > 0
+        this.updateModal.answer2 && this.updateModal.answer3 && this.updateModal.answer4 &&
+        this.updateModal.correctAnswer && this.updateModal.selectedTags.length > 0
     },
   },
   async created() {
     await this.getQuestions()
     await axios.get(this.$appConfig.apiBaseUrl + '/quiz/api/tags?pageSize=100000&pageNo=0')
+      .then(res => {
+        this.tagList = res.data.data.items
+      })
+      .catch(err => {
+        store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
+      })
+  },
+  methods: {
+    async downloadTemplate() {
+      // get file from server
+      await axios.get(this.$appConfig.apiBaseUrl + '/quiz/api/file/download-template', {
+        responseType: 'blob',
+        headers: {
+          Authorization: `Bearer ${store.token}`
+        }
+      })
         .then(res => {
-          this.tagList = res.data.data.items
+          const url = window.URL.createObjectURL(new Blob([res.data]))
+          const link = document.createElement('a')
+          link.href = url
+          link.setAttribute('download', 'template.xlsx')
+          document.body.appendChild(link)
+          link.click()
         })
         .catch(err => {
           store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
         })
-  },
-  methods: {
+    },
     selectAllQuestions() {
       if (this.selectedQuestions.length === this.questions.length) {
         this.selectedQuestions = []
@@ -421,14 +448,14 @@ export default {
           Authorization: `Bearer ${store.token}`
         }
       })
-          .then(res => {
-            store.displaySuccess('Upload file thành công')
-            this.uploadFile = null
-            this.getQuestions()
-          })
-          .catch(err => {
-            store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
-          })
+        .then(res => {
+          store.displaySuccess('Upload file thành công')
+          this.uploadFile = null
+          this.getQuestions()
+        })
+        .catch(err => {
+          store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
+        })
     },
     async searchByTag(tagId, keyword) {
       this.tagId = tagId
@@ -445,17 +472,17 @@ export default {
       }
       this.loading = true
       await axios.get(url)
-          .then(res => {
-            this.questions = res.data.data.items
-            this.totalPage = res.data.data.totalPage
-            this.total = res.data.data.totalElements
-          })
-          .catch(err => {
-            store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
-          })
-          .finally(() => {
-            this.loading = false
-          })
+        .then(res => {
+          this.questions = res.data.data.items
+          this.totalPage = res.data.data.totalPage
+          this.total = res.data.data.totalElements
+        })
+        .catch(err => {
+          store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
+        })
+        .finally(() => {
+          this.loading = false
+        })
     },
     async deleteQuestions() {
       await axios.delete(this.$appConfig.apiBaseUrl + `/quiz/api/questions`, {
@@ -487,31 +514,31 @@ export default {
       }
 
       await axios.post(this.$appConfig.apiBaseUrl + '/quiz/api/questions',
-          {
-            content: this.createModal.content,
-            question: this.createModal.question,
-            answer1: this.createModal.answer1,
-            answer2: this.createModal.answer2,
-            answer3: this.createModal.answer3,
-            answer4: this.createModal.answer4,
-            correctAnswer: parseInt(this.createModal.correctAnswer),
-            tagList: tagIds,
-            explanation: this.createModal.explanation,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${store.token}`
-            }
+        {
+          content: this.createModal.content,
+          question: this.createModal.question,
+          answer1: this.createModal.answer1,
+          answer2: this.createModal.answer2,
+          answer3: this.createModal.answer3,
+          answer4: this.createModal.answer4,
+          correctAnswer: parseInt(this.createModal.correctAnswer),
+          tagList: tagIds,
+          explanation: this.createModal.explanation,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${store.token}`
           }
+        }
       )
-          .then(res => {
-            store.displaySuccess('Thêm câu hỏi thành công')
-            this.getQuestions()
-            this.resetCreateModal()
-          })
-          .catch(err => {
-            store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
-          })
+        .then(res => {
+          store.displaySuccess('Thêm câu hỏi thành công')
+          this.getQuestions()
+          this.resetCreateModal()
+        })
+        .catch(err => {
+          store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
+        })
     },
     resetCreateModal() {
       this.createModal.show = false
@@ -562,32 +589,32 @@ export default {
       }
 
       await axios.put(this.$appConfig.apiBaseUrl + '/quiz/api/questions/' + this.updateModal.id,
-          {
-            id: this.updateModal.id,
-            content: this.updateModal.content,
-            question: this.updateModal.question,
-            answer1: this.updateModal.answer1,
-            answer2: this.updateModal.answer2,
-            answer3: this.updateModal.answer3,
-            answer4: this.updateModal.answer4,
-            correctAnswer: parseInt(this.updateModal.correctAnswer),
-            explanation: this.updateModal.explanation,
-            tagList: tagIds
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${store.token}`
-            }
+        {
+          id: this.updateModal.id,
+          content: this.updateModal.content,
+          question: this.updateModal.question,
+          answer1: this.updateModal.answer1,
+          answer2: this.updateModal.answer2,
+          answer3: this.updateModal.answer3,
+          answer4: this.updateModal.answer4,
+          correctAnswer: parseInt(this.updateModal.correctAnswer),
+          explanation: this.updateModal.explanation,
+          tagList: tagIds
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${store.token}`
           }
+        }
       )
-          .then(res => {
-            store.displaySuccess('Cập nhật câu hỏi thành công')
-            this.getQuestions()
-            this.resetUpdateModal()
-          })
-          .catch(err => {
-            store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
-          })
+        .then(res => {
+          store.displaySuccess('Cập nhật câu hỏi thành công')
+          this.getQuestions()
+          this.resetUpdateModal()
+        })
+        .catch(err => {
+          store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
+        })
     },
     resetUpdateModal() {
       this.updateModal.show = false
