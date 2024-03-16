@@ -49,7 +49,6 @@
                     </div>
                   </div>
                 </div>
-                <p class="login__title__forgotPw">Quên mật khẩu?</p>
                 <p style="font-weight: bold;"><span>Chưa có tài khoản? </span>
                   <RouterLink to="/register">
                     <span class="login__title__register">Tạo tài khoản học mới</span>
