@@ -163,15 +163,12 @@ export default {
     },
     async getAchievementCount() {
       if (store.token) {
-        await axios.get(this.$appConfig.apiBaseUrl + `/quiz/api/achievements/?pageNo=0&pageSize=10000`, {
+        await axios.get(this.$appConfig.apiBaseUrl + `/quiz/api/achievements/daily`, {
           headers: {
             Authorization: `Bearer ${store.token}`
           }
         }).then(res => {
-          const latestAchievement = res.data.data.items[0]
-          if (latestAchievement) {
-            this.achievement = latestAchievement.name
-          }
+            this.achievement = res.data.data.days;
         }).catch(err => {
           store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
         })
