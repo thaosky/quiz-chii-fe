@@ -7,7 +7,7 @@
             <img src="img/theme/cloud1.png"
                  style="width: 100%">
           </div>
-          <div class="result-questions" style="position: absolute; right: 15px; top: 400px">
+          <div class="result-questions" style="position: absolute; right: 15px; top: 350px">
             <h2 class="result-box-header result-box-title">Giải thích</h2>
             <div class="result-box-body">
               <span class="text-center">
@@ -30,7 +30,7 @@
                     <p class="title-box">
                       Chúc mừng bạn đã hoàn thành bài kiểm tra
                     </p>
-                    <h4 class="note-title">
+                    <h4 class="note-title" style="font-weight: bold">
                       {{ result.testName }}
                     </h4>
                     <p class="title-box">
