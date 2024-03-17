@@ -7,6 +7,14 @@
             <img src="img/theme/cloud1.png"
                  style="width: 100%">
           </div>
+          <div class="result-questions" style="position: absolute; right: 15px; top: 400px">
+            <h2 class="result-box-header result-box-title">Giải thích</h2>
+            <div class="result-box-body">
+              <h3 class="text-center">
+                hi
+              </h3>
+            </div>
+          </div>
         </div>
         <div class="col-6 _col-2 main-center" style="min-height: 616px;">
           <div class="w-100 h-100">
