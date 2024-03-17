@@ -263,4 +263,10 @@ export default {
 .achievement-count {
   color: #ee9b1f;
 }
+.btn-success.disabled, .btn-success:disabled {
+  background-color: darkgrey;
+  border: darkgray;
+}
+
+
 </style>
