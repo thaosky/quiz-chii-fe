@@ -8,7 +8,7 @@
         <section class="section section-lg pt-lg-0 w-100" style="margin-top: 200px">
           <div class="container">
             <div class="d-flex justify-content-center my-3">
-              <SearchCustom :tags="[]" @submit="searchUsers"></SearchCustom>
+              <SearchCustom :tags="[]" :searchContent="'Tìm kiếm theo username'" @submit="searchUsers"></SearchCustom>
             </div>
             <div class="row mb-3" style="justify-content: end">
               <button class="btn btn-success" @click="createModal.show=true">Thêm user</button>

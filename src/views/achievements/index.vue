@@ -8,7 +8,9 @@
         <section class="section section-lg pt-lg-0 w-100" style="margin-top: 200px">
           <div class="container">
             <div class="d-flex justify-content-center my-3" v-if="store.isAdmin()">
-              <SearchCustom :tags="[]" @submit="searchAchievements"></SearchCustom>
+              <SearchCustom :tags="[]"
+                            :searchContent="'Tìm kiếm theo tên thành tựu'"
+                            @submit="searchAchievements"></SearchCustom>
             </div>
             <div class="row mb-3" style="justify-content: end">
               <button v-if="store.isAdmin()" class="btn btn-success" @click="createModal.show=true">
@@ -34,7 +36,8 @@
                     <td v-if="store.isAdmin()">{{ achievement.daysStreak }}</td>
                     <td v-if="store.isAdmin()">
                       <button class="btn btn-sm btn-primary" @click="showUpdateModal(achievement)">Sửa</button>
-                      <button class="btn btn-sm btn-danger" @click="showDeleteAchievementModal(achievement.id)">Xóa</button>
+                      <button class="btn btn-sm btn-danger" @click="showDeleteAchievementModal(achievement.id)">Xóa
+                      </button>
                     </td>
                     <td v-if="store.isLoggedIn() && !store.isAdmin()">{{ achievement.timeAchieved }}</td>
                   </tr>
@@ -146,15 +149,15 @@
 </template>
 
 <script>
-import { store } from '@/store'
+import {store} from '@/store'
 import SearchCustom from '@/components/SearchCustom.vue'
 import axios from 'axios'
 import Modal from '@/components/Modal.vue'
 
 export default {
   name: 'achievements',
-  components: { Modal, SearchCustom },
-  data () {
+  components: {Modal, SearchCustom},
+  data() {
     return {
       store,
       achievements: [],
@@ -195,11 +198,11 @@ export default {
       loading: false,
     }
   },
-  async created () {
+  async created() {
     await this.searchAchievements('', '')
   },
   methods: {
-    async searchAchievements (tagId, keyword) {
+    async searchAchievements(tagId, keyword) {
       this.keyword = keyword
       this.getAchievements()
     },
@@ -229,8 +232,8 @@ export default {
         this.loading = false
       })
     },
-    validateForm (formData, type = 'create') {
-      const { name, message, daysStreak } = formData
+    validateForm(formData, type = 'create') {
+      const {name, message, daysStreak} = formData
       if (!name) {
         this[type + 'Modal'].errors.name = 'Vui lòng nhập tên thành tựu'
         return false
@@ -257,9 +260,9 @@ export default {
       }
       return true
     },
-    createAchievement () {
+    createAchievement() {
       if (!this.validateForm(this.createModal)) return
-      const { name, message, daysStreak } = this.createModal
+      const {name, message, daysStreak} = this.createModal
       axios.post(this.$appConfig.apiBaseUrl + '/quiz/api/achievements/configs', {
         name,
         message,
@@ -290,7 +293,7 @@ export default {
         }
       })
     },
-    resetCreateModal () {
+    resetCreateModal() {
       this.createModal.name = ''
       this.createModal.message = ''
       this.createModal.daysStreak = 0
@@ -298,7 +301,7 @@ export default {
       this.createModal.errors.message = ''
       this.createModal.errors.daysStreak = ''
     },
-    showUpdateModal (achievement) {
+    showUpdateModal(achievement) {
       this.updateModal.id = achievement.id
       this.updateModal.name = achievement.name
       this.updateModal.message = achievement.message
@@ -308,9 +311,9 @@ export default {
       this.updateModal.errors.daysStreak = ''
       this.updateModal.show = true
     },
-    updateAchievement () {
+    updateAchievement() {
       if (!this.validateForm(this.updateModal, 'update')) return
-      const { id, name, message, daysStreak } = this.updateModal
+      const {id, name, message, daysStreak} = this.updateModal
       let data = {
         name,
         message,
@@ -341,11 +344,11 @@ export default {
         }
       })
     },
-    showDeleteAchievementModal (id) {
+    showDeleteAchievementModal(id) {
       this.deleteModal.show = true
       this.deleteModal.id = id
     },
-    deleteAchievement () {
+    deleteAchievement() {
       axios.delete(this.$appConfig.apiBaseUrl + `/quiz/api/achievements/configs/${this.deleteModal.id}`, {
         headers: {
           'Authorization': `Bearer ${store.token}`
@@ -360,7 +363,7 @@ export default {
     },
   },
   watch: {
-    pageNo (val) {
+    pageNo(val) {
       this.getAchievements()
     },
   },

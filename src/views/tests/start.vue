@@ -139,7 +139,7 @@
         <div class="popup-modal-content"
              style="background: #fff; border-radius: 20px; margin-top: 20px;">
           <p style="font-weight: bold; font-size: 24px">
-            Bạn có chắc chắn muốn thoát ? Kết quả của bạn sẽ không được lưu lại
+            Bạn có chắc chắn muốn thoát? Kết quả của bạn sẽ không được lưu lại
           </p>
           <div class="w-100 text-center">
             <div class="div-submit-success-2">

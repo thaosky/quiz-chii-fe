@@ -15,7 +15,7 @@
         <i class="fa" :class="isOpen ? 'fa-chevron-down' : 'fa-chevron-up'" aria-hidden="true"></i>
       </div>
       <input id="key_search" v-model="keyword" autocomplete="off" class="search__input" name="key"
-             placeholder="Cho QuizChii biết bạn muốn tìm kiếm gì?" :style="{
+             :placeholder="searchContent" :style="{
                 width: tags && tags.length ? '373px' : '543px',
              }">
     </div>
@@ -31,7 +31,8 @@
 export default {
   name: "SearchCustom",
   props: [
-      'tags'
+      'tags',
+      'searchContent'
   ],
   created() {},
   data() {

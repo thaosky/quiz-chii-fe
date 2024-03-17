@@ -7,6 +7,9 @@
         </Title>
         <section class="section section-lg pt-lg-0 w-100" style="margin-top: 200px">
           <div class="container">
+            <div class="d-flex justify-content-center my-3">
+              <SearchCustom :tags="tagList" :searchContent="'Tìm kiếm theo tên tag'" @submit="searchByTag"></SearchCustom>
+            </div>
             <div v-if="store.isAdmin()" class="row mb-3" style="justify-content: end">
               <button class="btn btn-success" @click="showCreateModal">Thêm tag</button>
             </div>
@@ -123,10 +126,11 @@
 import axios from 'axios'
 import { store } from '@/store'
 import Modal from '@/components/Modal.vue'
+import SearchCustom from "@/components/SearchCustom.vue";
 
 export default {
   name: 'tags',
-  components: { Modal },
+  components: {SearchCustom, Modal },
   data () {
     return {
       store,

@@ -17,7 +17,7 @@
         <section class="section section-lg pt-lg-0 w-100" style="margin-top: 200px">
           <div class="container">
             <div class="d-flex justify-content-center my-3">
-              <SearchCustom :tags="tagList" @submit="searchByTag"></SearchCustom>
+              <SearchCustom :tags="tagList" :searchContent="'Tìm kiếm theo tên bài kiểm tra'" @submit="searchByTag"></SearchCustom>
             </div>
             <div v-if="store.isAdmin()" class="row mb-3" style="justify-content: flex-end">
               <router-link class="btn btn-success" to="/tests/create">Thêm quiz</router-link>

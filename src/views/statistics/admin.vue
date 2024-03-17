@@ -2,7 +2,7 @@
   <section class="section section-lg pt-lg-0 w-100" style="margin-top: 200px">
     <div class="container">
       <div class="d-flex justify-content-center my-3">
-        <SearchCustom :tags="tagList" @submit="searchByTag"></SearchCustom>
+        <SearchCustom :tags="tagList" :searchContent="'Tìm kiếm theo tên bài kiểm tra'" @submit="searchByTag"></SearchCustom>
       </div>
       <div class="row justify-content-center bg-white">
         <a-spin :spinning="loading" class="w-100" size="large">

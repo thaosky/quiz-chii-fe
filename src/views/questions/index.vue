@@ -8,7 +8,7 @@
         <section class="section section-lg pt-lg-0 w-100" style="margin-top: 200px">
           <div class="container-lg mx-auto">
             <div class="d-flex justify-content-center my-3">
-              <SearchCustom :tags="tagList" @submit="searchByTag"></SearchCustom>
+              <SearchCustom :tags="tagList" :searchContent="'Tìm kiếm theo nội dung câu hỏi'" @submit="searchByTag"></SearchCustom>
             </div>
             <div v-if="store.isAdmin()" class="row mb-3" style="justify-content: space-between">
               <button
@@ -39,7 +39,7 @@
                     </th>
                     <th scope="col" style="min-width: 130px">Giải thích</th>
                     <th scope="col" style="min-width: 130px">Tags</th>
-                    <th scope="col" style="width: 135px"></th>
+                    <th scope="col" style="width: 165px"></th>
                   </tr>
                   </thead>
                   <tbody>
