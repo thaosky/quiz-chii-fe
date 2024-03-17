@@ -10,10 +10,11 @@
           <div class="result-questions" style="position: absolute; right: 15px; top: 400px">
             <h2 class="result-box-header result-box-title">Giải thích</h2>
             <div class="result-box-body">
-              <h3 class="text-center">
-                hi
-              </h3>
+              <span class="text-center">
+                {{ result.resultDetails[currentQuestionIndex].explanation }}
+              </span>
             </div>
+            <img src="img/theme/mochi1.png" class="result-img">
           </div>
         </div>
         <div class="col-6 _col-2 main-center" style="min-height: 616px;">
@@ -194,4 +195,10 @@ export default {
 }
 </script>
 <style>
+.result-img {
+  position: absolute;
+  top: -40px;
+  left: -50px;
+  width: 50%;
+}
 </style>
