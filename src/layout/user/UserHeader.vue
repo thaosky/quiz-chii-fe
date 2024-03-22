@@ -7,10 +7,10 @@
           <div class="col-3 _col-1 position-r">
             <div class="logo-menu vertical-center">
               <router-link to="/tests">
-                <img src="img/theme/QuizChii_White.PNG" class="w-100 logo-pc">
+                <img src="img/theme/QuizChii_White.png" class="w-100 logo-pc">
               </router-link>
               <a class="open-loading" href="https://learn.mochidemy.com">
-                <img src="img/theme/mochi_new.PNG" class="w-100 logo-small">
+                <img src="img/theme/mochi_new.png" class="w-100 logo-small">
               </a>
             </div>
           </div>

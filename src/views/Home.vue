@@ -3,7 +3,7 @@
     <div class="hello" style="height: 100%">
       <div class="container-full" style="padding-top: 250px; height: 100%; position: relative; overflow: hidden">
         <div class="logo" style="position: absolute; top: 30px; left: 30px;">
-          <img alt="mochimochi" src="img/theme/QuizChii_Yellow.PNG" style="height: 100px">
+          <img alt="mochimochi" src="img/theme/QuizChii_Yellow.png" style="height: 100px">
         </div>
         <div class="row ">
           <div class="text-start" style="position: relative; min-width:320px; display: inline-flex">
