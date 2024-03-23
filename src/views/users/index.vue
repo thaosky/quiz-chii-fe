@@ -8,13 +8,13 @@
         <section class="section section-lg pt-lg-0 w-100" style="margin-top: 200px">
           <div class="container">
             <div class="d-flex justify-content-center my-3">
-              <SearchCustom :tags="[]" :searchContent="'Tìm kiếm theo username'" @submit="searchUsers"></SearchCustom>
+              <SearchCustom :searchContent="'Tìm kiếm theo username'" :tags="[]" @submit="searchUsers"></SearchCustom>
             </div>
             <div class="row mb-3" style="justify-content: end">
               <button class="btn btn-success" @click="createModal.show=true">Thêm user</button>
             </div>
             <div class="row justify-content-center bg-white">
-              <a-spin :spinning="loading" size="large" class="w-100">
+              <a-spin :spinning="loading" class="w-100" size="large">
                 <table v-if="users.length" class="table table-striped">
                   <thead>
                   <tr>
@@ -87,13 +87,13 @@
                 <div>
                   <div style="position: relative;">
                     <input
-                        v-model="createModal.password"
-                        :class="{'is-invalid': createModal.errors.password}"
-                        :type="createModal.showPassword ? 'text' : 'password'"
-                        class="form-control"
-                        name="password"
-                        placeholder="Nhập mật khẩu"
-                        @focus="createModal.errors.password = ''">
+                      v-model="createModal.password"
+                      :class="{'is-invalid': createModal.errors.password}"
+                      :type="createModal.showPassword ? 'text' : 'password'"
+                      class="form-control"
+                      name="password"
+                      placeholder="Nhập mật khẩu"
+                      @focus="createModal.errors.password = ''">
                     <span style="position: absolute; top:0.7em;right:1em;cursor: pointer;"
                           @click="createModal.showPassword = !createModal.showPassword">
                         <i v-if="createModal.showPassword" class="fa fa-eye-slash"></i>
@@ -125,7 +125,7 @@
             <form action="">
               <div class="form-group">
                 <label for="username">Tên đăng nhập</label>
-                <div class="" id="username"> {{ updateModal.username }}</div>
+                <div id="username" class=""> {{ updateModal.username }}</div>
               </div>
               <div class="form-group">
                 <label :class="{'text-danger': updateModal.errors.name}" for="name">Tên hiển thị</label>
@@ -148,13 +148,13 @@
                   <input v-model="updateModal.hasNewPassword" type="checkbox"> Cập nhật mật khẩu
                   <div v-if="updateModal.hasNewPassword" style="position: relative;margin-top: 10px">
                     <input
-                        v-model="updateModal.password"
-                        :class="{'is-invalid': updateModal.errors.password}"
-                        :type="updateModal.showPassword ? 'text' : 'password'"
-                        class="form-control"
-                        name="password"
-                        placeholder="Nhập mật khẩu mới"
-                        @focus="updateModal.errors.password = ''">
+                      v-model="updateModal.password"
+                      :class="{'is-invalid': updateModal.errors.password}"
+                      :type="updateModal.showPassword ? 'text' : 'password'"
+                      class="form-control"
+                      name="password"
+                      placeholder="Nhập mật khẩu mới"
+                      @focus="updateModal.errors.password = ''">
                     <span style="position: absolute; top:0.7em;right:1em;cursor: pointer;"
                           @click="updateModal.showPassword = !updateModal.showPassword">
                         <i v-if="updateModal.showPassword" class="fa fa-eye-slash"></i>
@@ -184,15 +184,15 @@
 </template>
 
 <script>
-import { store } from '@/store'
+import {store} from '@/store'
 import SearchCustom from '@/components/SearchCustom.vue'
 import axios from 'axios'
 import Modal from '@/components/Modal.vue'
 
 export default {
   name: 'users',
-  components: { Modal, SearchCustom },
-  data () {
+  components: {Modal, SearchCustom},
+  data() {
     return {
       store,
       users: [],
@@ -239,11 +239,11 @@ export default {
       loading: false,
     }
   },
-  async created () {
+  async created() {
     await this.searchUsers('', '')
   },
   methods: {
-    getRoles (roles) {
+    getRoles(roles) {
       if (!roles) return 'Người dùng'
       for (let i = 0; i < roles.length; i++) {
         if (roles[i].name === 'ROLE_ADMIN') {
@@ -252,14 +252,14 @@ export default {
       }
       return 'Người dùng'
     },
-    async searchUsers (tagId, keyword) {
+    async searchUsers(tagId, keyword) {
       this.keyword = keyword
       this.getUsers()
     },
     async getUsers() {
       let url = this.$appConfig.apiBaseUrl + `/quiz/api/users?pageNo=${this.pageNo - 1}&pageSize=${this.pageSize}&sortDir=${this.sortDir}&sortName=${this.sortName}`
       if (this.keyword) {
-        url += `&content=${this.keyword}`
+        url += `&name=${this.keyword}`
       }
       this.loading = true
       axios.get(url, {
@@ -276,8 +276,8 @@ export default {
         this.loading = false
       })
     },
-    validateForm (formData) {
-      const { username, name, email, password, hasNewPassword } = formData
+    validateForm(formData) {
+      const {username, name, email, password, hasNewPassword} = formData
       if (!username) {
         this.createModal.errors.username = 'Vui lòng nhập tên đăng nhập'
         return false
@@ -316,9 +316,9 @@ export default {
       }
       return true
     },
-    createUser () {
+    createUser() {
       if (!this.validateForm(this.createModal)) return
-      const { username, name, email, password, role } = this.createModal
+      const {username, name, email, password, role} = this.createModal
       axios.post(this.$appConfig.apiBaseUrl + '/quiz/api/users', {
         username,
         name,
@@ -355,7 +355,7 @@ export default {
         }
       })
     },
-    resetCreateModal () {
+    resetCreateModal() {
       this.createModal.username = ''
       this.createModal.name = ''
       this.createModal.email = ''
@@ -367,7 +367,7 @@ export default {
       this.createModal.errors.email = ''
       this.createModal.errors.password = ''
     },
-    showUpdateModal (user) {
+    showUpdateModal(user) {
       this.updateModal.id = user.id
       this.updateModal.username = user.username
       this.updateModal.name = user.name
@@ -381,9 +381,9 @@ export default {
       this.updateModal.errors.password = ''
       this.updateModal.show = true
     },
-    updateUser () {
+    updateUser() {
       if (!this.validateForm(this.updateModal)) return
-      const { id, name, email, password, hasNewPassword, active } = this.updateModal
+      const {id, name, email, password, hasNewPassword, active} = this.updateModal
       let data = {
         name,
         email,
@@ -421,7 +421,7 @@ export default {
     }
   },
   watch: {
-    pageNo (val) {
+    pageNo(val) {
       this.getUsers()
     },
   },

@@ -2,7 +2,8 @@
   <section class="section section-lg pt-lg-0 w-100" style="margin-top: 200px">
     <div class="container">
       <div class="d-flex justify-content-center my-3">
-        <SearchCustom :tags="tagList" :searchContent="'Tìm kiếm theo tên bài kiểm tra'" @submit="searchByTag"></SearchCustom>
+        <SearchCustom :searchContent="'Tìm kiếm theo tên bài kiểm tra'" :tags="tagList"
+                      @submit="searchByTag"></SearchCustom>
       </div>
       <div class="row justify-content-center bg-white">
         <a-spin :spinning="loading" class="w-100" size="large">
@@ -29,15 +30,15 @@
                 {{ test.totalSubmit }}
               </td>
               <td data-toggle="tooltip">
-                {{ test.averagePoint  }}
+                {{ test.averagePoint }}
               </td>
               <td>
                 <span v-for="tag in test.tagList" :key="tag.id" class="badge badge-primary">{{ tag.name }}</span>
               </td>
               <td style="display: flex; justify-content: center">
                 <router-link
-                    :to="'/statistics/quiz/' + test.id"
-                    class="btn btn-sm btn-primary">Chi tiết
+                  :to="'/statistics/quiz/' + test.id"
+                  class="btn btn-sm btn-primary">Chi tiết
                 </router-link>
               </td>
             </tr>
@@ -58,12 +59,12 @@
 import axios from 'axios'
 import ButtonSubmitSuccess from '@/components/ButtonSubmitSuccess.vue'
 import SearchCustom from '@/components/SearchCustom.vue'
-import { store } from '@/store'
+import {store} from '@/store'
 
 export default {
   name: 'admin-statistics',
-  components: { SearchCustom, ButtonSubmitSuccess },
-  data () {
+  components: {SearchCustom, ButtonSubmitSuccess},
+  data() {
     return {
       store,
       tests: [],
@@ -79,24 +80,26 @@ export default {
       loading: false,
     }
   },
-  async created () {
+  async created() {
     await this.searchByTag()
     await axios.get(this.$appConfig.apiBaseUrl + '/quiz/api/tags?pageSize=100000&pageNo=0')
-        .then(res => {
-          this.tagList = res.data.data.items
-        })
-        .catch(err => {
-          store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
-        })
+      .then(res => {
+        this.tagList = res.data.data.items
+      })
+      .catch(err => {
+        store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
+      })
   },
   methods: {
-    shortenContent (content) {
+    shortenContent(content) {
       if (content.length > 30) {
         return content.substring(0, 30) + '...'
       }
       return content
     },
-    async searchByTag () {
+    async searchByTag(tagId, keyword) {
+      this.tagId = tagId
+      this.keyword = keyword
       let url = this.$appConfig.apiBaseUrl + `/quiz/api/tests?pageNo=${this.pageNo - 1}&pageSize=${this.pageSize}&sortDir=${this.sortDir}&sortName=${this.sortName}`
       if (this.selectedTagId) {
         url += `&tagId=${this.selectedTagId}`
@@ -106,17 +109,17 @@ export default {
       }
       this.loading = true
       await axios.get(url)
-          .then(res => {
-            this.tests = res.data.data.items
-            this.totalPage = res.data.data.totalPage
-            this.total = res.data.data.totalElements
-          })
-          .catch(err => {
-            store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
-          })
-          .finally(() => {
-            this.loading = false
-          })
+        .then(res => {
+          this.tests = res.data.data.items
+          this.totalPage = res.data.data.totalPage
+          this.total = res.data.data.totalElements
+        })
+        .catch(err => {
+          store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
+        })
+        .finally(() => {
+          this.loading = false
+        })
     },
   }
 }
