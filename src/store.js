@@ -31,5 +31,9 @@ export const store = reactive({
     },
     isAdmin() {
         return this.user != null && this.user.roles.includes('ROLE_ADMIN')
+    },
+    reset() {
+        this.user = null
+        this.token = null
     }
 })

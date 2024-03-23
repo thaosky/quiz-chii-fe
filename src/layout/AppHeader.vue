@@ -149,7 +149,7 @@
                   <img src="https://cdn-icons-png.flaticon.com/512/891/891399.png" alt="">
                 </div>
               </router-link>
-              <router-link to="/statistics/my-results" class="btn-setting">
+              <router-link v-if="store.isAdmin()" to="/statistics/my-results" class="btn-setting">
                 <div class="btn-top text-start btn-active menu-dropdown-item" @click="showDropDown = false">
                   <span class="p-dropdown vertical-center">
                     Lịch sử làm bài
@@ -233,6 +233,7 @@ export default {
   },
   methods: {
     logout() {
+      store.reset();
       localStorage.removeItem('user');
       localStorage.removeItem('token');
       localStorage.removeItem('expired');
