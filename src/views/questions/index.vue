@@ -33,7 +33,7 @@
                              @change="selectAllQuestions">
                     </th>
                     <th scope="col">Nội dung</th>
-                    <th scope="col">Câu hỏi</th>
+                    <th scope="col">Dữ kiện câu hỏi</th>
                     <th v-if="store.isAdmin()" scope="col" style="width: 160px">
                       Phương án đúng
                     </th>

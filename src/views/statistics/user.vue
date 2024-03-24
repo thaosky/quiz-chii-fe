@@ -6,7 +6,7 @@
           <table v-if="result.list && result.list.length" class="table table-striped">
             <thead>
             <tr>
-              <th scope="col">Tên</th>
+              <th scope="col">Username</th>
               <th scope="col">Thời điểm nộp bài</th>
               <th scope="col">Thời gian làm bài</th>
               <th scope="col">Kết quả</th>
