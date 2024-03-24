@@ -28,7 +28,7 @@
                 </div>
               </div>
               <div class="col-2 text-center">
-                <img src="img/theme/close_black.webp" style="width: 25px; cursor: pointer"
+                <img src="img/theme/close_black.png" style="width: 25px; cursor: pointer"
                      @click="endTestEarly">
               </div>
             </div>
@@ -107,7 +107,7 @@
                  style="width: 100%">
           </div>
           <div class="position-a" style="right: 0; top: 50%; width: 80%">
-            <img src="img/theme/cloud8.webp"
+            <img src="img/theme/cloud8.png"
                  style="width: 100%">
           </div>
           <div class="result-questions">

@@ -3,7 +3,7 @@
     <div class="hello" style="height: 100%">
       <div class="container-full" style="padding-top: 250px; height: 100%; position: relative; overflow: hidden">
         <div class="logo" style="position: absolute; top: 30px; left: 30px;">
-          <img alt="mochimochi" src="img/theme/QuizChii_Yellow.png" style="height: 100px">
+          <img alt="mochimochi" src="img/theme/quizchii_yellow.png" style="height: 100px">
         </div>
         <div class="row ">
           <div class="text-start" style="position: relative; min-width:320px; display: inline-flex">
@@ -25,15 +25,15 @@
           </div>
         </div>
         <div style="position:absolute; left: -130px; top: 60%; width: 80%; max-width: 300px">
-          <img src="img/theme/cloud8.webp"
+          <img src="img/theme/cloud8.png"
                style="width: 100%; opacity: 0.4">
         </div>
         <div style="position:absolute; right: -100px; top: 10px; width: 80%; max-width: 300px">
-          <img src="img/theme/cloud8.webp"
+          <img src="img/theme/cloud8.png"
                style="width: 100%; opacity: 0.4">
         </div>
         <div style="position:absolute; right: -50px; bottom: 0; width: 80%; max-width: 300px">
-          <img src="img/theme/cloud8.webp"
+          <img src="img/theme/cloud8.png"
                style="width: 100%; opacity: 0.4">
         </div>
       </div>

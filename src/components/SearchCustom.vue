@@ -60,7 +60,7 @@ export default {
   align-items: center;
   border-radius: 8px;
   position: relative;
-  z-index: 200;
+  z-index: 199;
 }
 
 .search__left {

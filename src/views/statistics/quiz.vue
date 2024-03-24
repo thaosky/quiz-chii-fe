@@ -7,6 +7,18 @@
         </Title>
         <section class="section section-lg pt-lg-0 w-100" style="margin-top: 200px">
           <div class="container">
+            <div v-if="store.isAdmin()" class="row mb-3" style="justify-content: end">
+              <button
+                class="btn btn-outline-success mb-0"
+                @click="downloadExcel"
+              >Download Excel
+              </button>
+              <button
+                class="btn btn-outline-success mb-0"
+                @click="downloadPDF"
+              >Download PDF
+              </button>
+            </div>
             <div class="row justify-content-center bg-white">
               <a-spin :spinning="loading" class="w-100" size="large">
                 <table v-if="result.list && result.list.length" class="table table-striped">
@@ -25,7 +37,7 @@
                       {{ detail.username }}
                     </td>
                     <td :title="submittedTime_(detail.submittedAt)" data-toggle="tooltip">
-                      {{submittedTime_(detail.submittedAt)}}
+                      {{ submittedTime_(detail.submittedAt) }}
                     </td>
                     <td :title="calcTimeUsed(detail.startedAt, detail.submittedAt)" data-toggle="tooltip">
                       {{ calcTimeUsed(detail.startedAt, detail.submittedAt) }}
@@ -34,7 +46,7 @@
                       {{ detail.corrected }} / {{ detail.totalQuestion }}
                     </td>
                     <td :title="detail.corrected" data-toggle="tooltip">
-                      {{(detail.corrected * 100 / detail.totalQuestion).toFixed(2) }}
+                      {{ (detail.corrected * 100 / detail.totalQuestion).toFixed(2) }}
                     </td>
                   </tr>
                   </tbody>
@@ -50,19 +62,19 @@
 </template>
 
 <script>
-import { store } from '@/store'
+import {store} from '@/store'
 import axios from 'axios'
 
 export default {
   name: 'statistics-by-test',
-  data () {
+  data() {
     return {
       store,
       result: {},
       loading: false
     }
   },
-  async created () {
+  async created() {
     this.loading = true
     await axios.get(this.$appConfig.apiBaseUrl + `/quiz/api/results/test/${this.$route.params.id}`, {
       headers: {
@@ -77,7 +89,7 @@ export default {
     })
   },
   methods: {
-    calcTimeUsed (started, submitted) {
+    calcTimeUsed(started, submitted) {
       const start = new Date(started)
       const submit = new Date(submitted)
       const diff = submit.getTime() - start.getTime()
@@ -99,6 +111,31 @@ export default {
       ].map((n, i) => n.toString().padStart(2, "0")).join(":");
       return datePart + " " + timePart;
     },
+    downloadExcel() {
+      this.downloadFromUrl(this.$appConfig.apiBaseUrl + `/quiz/api/results/test/statistic-excel/${this.$route.params.id}`, 'statistics')
+    },
+    downloadPDF() {
+      this.downloadFromUrl(this.$appConfig.apiBaseUrl + `/quiz/api/results/test/statistic-pdf/${this.$route.params.id}`, 'statistics')
+    },
+    async downloadFromUrl(url, filename) {
+      await axios.get(url, {
+        responseType: 'blob',
+        headers: {
+          Authorization: `Bearer ${store.token}`
+        }
+      })
+        .then(res => {
+          const url = window.URL.createObjectURL(new Blob([res.data]))
+          const link = document.createElement('a')
+          link.href = url
+          link.setAttribute('download', filename + '.xlsx')
+          document.body.appendChild(link)
+          link.click()
+        })
+        .catch(err => {
+          store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
+        })
+    }
   }
 }
 </script>

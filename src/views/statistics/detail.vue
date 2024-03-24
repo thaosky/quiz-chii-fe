@@ -104,7 +104,7 @@
                  style="width: 100%">
           </div>
           <div class="position-a" style="right: 0; top: 50%; width: 80%">
-            <img src="img/theme/cloud8.webp"
+            <img src="img/theme/cloud8.png"
                  style="width: 100%">
           </div>
           <div v-if="result" class="result-questions">
