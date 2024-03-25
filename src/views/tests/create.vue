@@ -63,15 +63,16 @@
           <div class="container">
             <form>
               <div class="form-row">
-                <div class="form-group col-md-12">
+                <div :class="errors.name ? 'has-error' : ''" class="form-group col-md-12 required-field">
                   <label for="content">Tên quiz</label>
-                  <input v-model="name" class="form-control" required/>
+                  <input v-model="name" class="form-control" required @focusout="errors.name = !name"/>
                 </div>
               </div>
               <div class="form-row">
-                <div class="form-group col-md-12">
+                <div :class="errors.description ? 'has-error' : ''" class="form-group col-md-12 required-field">
                   <label for="content">Mô tả</label>
-                  <textarea v-model="description" class="form-control" required rows="5"></textarea>
+                  <textarea v-model="description" class="form-control" required rows="5"
+                            @focusout="errors.description = !description"/>
                 </div>
               </div>
               <div class="form-row">
@@ -85,11 +86,13 @@
                 </div>
               </div>
               <div class="form-row">
-                <div class="form-group col-md-6">
+                <div :class="errors.availableTime ? 'has-error' : ''" class="form-group col-md-6 required-field">
                   <label for="content">Thời gian làm bài</label>
-                  <input v-model="availableTime" class="form-control" required type="number"/>
+                  <input v-model="availableTime" class="form-control" required type="number"
+                         @focusout="errors.availableTime = !availableTime"/>
                 </div>
-                <div v-if="testType === 'ONCE_WITH_TIME'" class="form-group col-md-6">
+                <div v-if="testType === 'ONCE_WITH_TIME'" :class="errors.startTime ? 'has-error' : ''"
+                     class="form-group col-md-6 required-field">
                   <label for="startTime">Thời điểm bắt đầu</label>
                   <a-date-picker
                     id="startTime"
@@ -102,6 +105,7 @@
                     name="startDate"
                     placeholder="Chọn ngày"
                     valueFormat="YYYY-MM-DD HH:mm:00"
+                    @focusout="errors.startTime = !startTime"
                   />
                 </div>
               </div>
@@ -145,6 +149,7 @@
             </form>
 
             <button class="btn btn-primary" type="button" @click="showModal">Thêm câu hỏi</button>
+            <button class="btn btn-success" type="button" @click="storeTest">Lưu lại</button>
             <h4 v-if="addQuestionModal.selectedQuestionIds.length" class="mt-5">
               Các câu hỏi đã chọn
             </h4>
@@ -175,13 +180,6 @@
               </template>
               </tbody>
             </table>
-            <button
-              v-if="addQuestionModal.selectedQuestionIds.length"
-              :disabled="!name || !availableTime || !addQuestionModal.selectedQuestionIds.length"
-              class="btn btn-success" type="button" @click="storeTest"
-            >
-              Lưu lại
-            </button>
           </div>
         </section>
       </div>
@@ -225,9 +223,15 @@ export default {
       availableTime: '',
       selectedTags: [],
       questionLoading: false,
-      testType: '',
+      testType: 'ONCE_WITH_TIME',
       startTime: null,
-      loadingQuestions: false
+      questionsLoading: false,
+      errors: {
+        name: false,
+        description: false,
+        availableTime: false,
+        startTime: false,
+      },
     }
   },
   computed: {
@@ -284,11 +288,6 @@ export default {
         return
       }
 
-      if (!this.addQuestionModal.selectedQuestionIds.length) {
-        store.displayError('Vui lòng chọn it nhất 1 câu hỏi')
-        return
-      }
-
       if (this.testType === 0 && !this.startTime) {
         store.displayError('Vui lòng chọn thời gian thi')
         return
@@ -317,14 +316,12 @@ export default {
         headers: {
           'Authorization': `Bearer ${store.token}`
         }
+      }).then(res => {
+        store.displaySuccess('Tạo bài thi thành công')
+        this.$router.push('/tests')
+      }).catch(err => {
+        store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
       })
-        .then(res => {
-          store.displaySuccess('Tạo bài thi thành công')
-          this.$router.push('/tests')
-        })
-        .catch(err => {
-          store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
-        })
     },
     async getQuestionsForModal() {
       let url = this.$appConfig.apiBaseUrl + '/quiz/api/questions?pageSize=' + this.addQuestionModal.pageSize
@@ -357,11 +354,9 @@ export default {
       await axios.get(this.$appConfig.apiBaseUrl + '/quiz/api/questions?pageSize=100000&pageNo=0')
         .then(res => {
           this.questions = res.data.data.items
-        })
-        .catch(err => {
+        }).catch(err => {
           store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
-        })
-        .finally(() => {
+        }).finally(() => {
           this.questionLoading = false
         })
     },
@@ -371,7 +366,7 @@ export default {
     },
     convertAnswer(question) {
       if (question.correctAnswer) {
-        question.correctAnswer = parseInt(question.correctAnswer)
+        question.correctAnswer = parseInt('' + question.correctAnswer)
       } else {
         return ''
       }

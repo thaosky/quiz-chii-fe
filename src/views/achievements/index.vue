@@ -1,17 +1,18 @@
 <template>
-  
+
   <div class="content position-r w-100" style="background: #F2F2F2; min-height: calc(100vh - 128px)">
     <div class="container-fluid">
       <div class="row justify-content-center">
         <Title>
-          Danh sách cài đặt thành tựu
+          {{ store.isAdmin() ? 'Danh sách cài đặt thành tựu' : 'Danh sách thành tựu' }}
         </Title>
         <section class="section section-lg pt-lg-0 w-100" style="margin-top: 200px">
           <div class="container">
-            <div class="d-flex justify-content-center my-3" v-if="store.isAdmin()">
-              <SearchCustom :tags="[]"
-                            :searchContent="'Tìm kiếm theo tên thành tựu'"
-                            @submit="searchAchievements"></SearchCustom>
+            <div v-if="store.isAdmin()" class="d-flex justify-content-center my-3">
+              <SearchCustom
+                :searchContent="'Tìm kiếm theo tên thành tựu'"
+                :tags="[]"
+                @submit="searchAchievements"/>
             </div>
             <div class="row mb-3" style="justify-content: end">
               <button v-if="store.isAdmin()" class="btn btn-success" @click="createModal.show=true">
@@ -25,9 +26,9 @@
                   <tr>
                     <th scope="col">Tên thành tựu</th>
                     <th scope="col">Thông báo</th>
-                    <th scope="col" v-if="store.isAdmin()">Số ngày liên tục</th>
-                    <th scope="col" v-if="store.isAdmin()"></th>
-                    <th scope="col" v-if="store.isLoggedIn() && !store.isAdmin()">Thời gian đạt được</th>
+                    <th v-if="store.isAdmin()" scope="col">Số ngày liên tục</th>
+                    <th v-if="store.isAdmin()" scope="col"></th>
+                    <th v-if="store.isLoggedIn() && !store.isAdmin()" scope="col">Thời gian đạt được</th>
                   </tr>
                   </thead>
                   <tbody>
@@ -64,7 +65,7 @@
           </template>
           <template>
             <form action="">
-              <div class="form-group">
+              <div class="form-group required-field">
                 <label :class="{'text-danger': createModal.errors.name}" for="name">Tên thành tựu</label>
                 <input v-model="createModal.name" :class="{'is-invalid': createModal.errors.name}"
                        class="form-control"
@@ -72,7 +73,7 @@
                        @focus="createModal.errors.name = ''">
                 <p class="input__message__error"><small>{{ createModal.errors.name }}</small></p>
               </div>
-              <div class="form-group">
+              <div class="form-group required-field">
                 <label :class="{'text-danger': createModal.errors.message}" for="message">Thông báo</label>
                 <input v-model="createModal.message" :class="{'is-invalid': createModal.errors.message}"
                        class="form-control"
@@ -80,7 +81,7 @@
                        @focus="createModal.errors.message = ''">
                 <p class="input__message__error"><small>{{ createModal.errors.message }}</small></p>
               </div>
-              <div class="form-group">
+              <div class="form-group required-field">
                 <label :class="{'text-danger': createModal.errors.daysStreak}" for="daysStreak">Số ngày liên tục</label>
                 <input v-model="createModal.daysStreak" :class="{'is-invalid': createModal.errors.daysStreak}"
                        class="form-control"
@@ -101,7 +102,7 @@
           </template>
           <template>
             <form action="">
-              <div class="form-group">
+              <div class="form-group required-field">
                 <label :class="{'text-danger': updateModal.errors.name}" for="name">Tên thành tựu</label>
                 <input v-model="updateModal.name" :class="{'is-invalid': updateModal.errors.name}"
                        class="form-control"
@@ -109,7 +110,7 @@
                        @focus="updateModal.errors.name = ''">
                 <p class="input__message__error"><small>{{ updateModal.errors.name }}</small></p>
               </div>
-              <div class="form-group">
+              <div class="form-group required-field">
                 <label :class="{'text-danger': updateModal.errors.message}" for="message">Thông báo</label>
                 <input v-model="updateModal.message" :class="{'is-invalid': updateModal.errors.message}"
                        class="form-control"
@@ -117,7 +118,7 @@
                        @focus="updateModal.errors.message = ''">
                 <p class="input__message__error"><small>{{ updateModal.errors.message }}</small></p>
               </div>
-              <div class="form-group">
+              <div class="form-group required-field">
                 <label :class="{'text-danger': updateModal.errors.daysStreak}" for="daysStreak">Số ngày liên tục</label>
                 <input v-model="updateModal.daysStreak" :class="{'is-invalid': updateModal.errors.daysStreak}"
                        class="form-control"

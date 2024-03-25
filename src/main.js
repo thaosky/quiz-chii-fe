@@ -33,6 +33,15 @@ Vue.use(wysiwyg, {
   hideModules: {
     "link": true,
     "headings": true,
+    "justifyLeft": true,
+    "justifyCenter": true,
+    "justifyRight": true,
+    "separator": true,
+    "code": true,
+    "orderedList": true,
+    "unorderedList": true,
+    "image": true,
+    "table": true,
   }
 })
 new Vue({

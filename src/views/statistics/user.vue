@@ -6,7 +6,7 @@
           <table v-if="result.list && result.list.length" class="table table-striped">
             <thead>
             <tr>
-              <th scope="col">Username</th>
+              <th scope="col">Tên bài quiz</th>
               <th scope="col">Thời điểm nộp bài</th>
               <th scope="col">Thời gian làm bài</th>
               <th scope="col">Kết quả</th>
@@ -49,6 +49,7 @@
 <script>
 import axios from 'axios'
 import {store} from '@/store'
+import moment from "moment"
 
 export default {
   name: 'user-statistics',
@@ -75,11 +76,11 @@ export default {
   },
   methods: {
     calcTimeUsed(started, submitted) {
-      const start = new Date(started)
-      const submit = new Date(submitted)
-      const diff = submit.getTime() - start.getTime()
-      const minutes = Math.floor(diff / 1000 / 60)
-      const seconds = Math.floor(diff / 1000) - minutes * 60
+      const start = moment(started, 'DD/MM/YYYY HH:mm:ss')
+      const end = moment(submitted, 'DD/MM/YYYY HH:mm:ss')
+      const duration = moment.duration(end.diff(start))
+      const seconds = duration.asSeconds() % 60
+      const minutes = Math.floor(duration.asSeconds() / 60)
       return `${minutes < 10 ? '0' + minutes : minutes}m:${seconds < 10 ? '0' + seconds : seconds}s`
     },
   }

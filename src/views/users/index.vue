@@ -59,7 +59,7 @@
           </template>
           <template>
             <form action="">
-              <div class="form-group">
+              <div class="form-group required-field">
                 <label :class="{'text-danger': createModal.errors.username}" for="username">Tên đăng nhập</label>
                 <input v-model="createModal.username" :class="{'is-invalid': createModal.errors.username}"
                        class="form-control"
@@ -67,14 +67,14 @@
                        @focus="createModal.errors.username = ''">
                 <p class="input__message__error"><small>{{ createModal.errors.username }}</small></p>
               </div>
-              <div class="form-group">
+              <div class="form-group required-field">
                 <label :class="{'text-danger': createModal.errors.name}" for="name">Tên hiển thị</label>
                 <input v-model="createModal.name" :class="{'is-invalid': createModal.errors.name}" class="form-control"
                        placeholder="Nhập tên hiển thị" type="text"
                        @focus="createModal.errors.name = ''">
                 <p class="input__message__error"><small>{{ createModal.errors.name }}</small></p>
               </div>
-              <div class="form-group">
+              <div class="form-group required-field">
                 <label :class="{'text-danger': createModal.errors.email}" for="email">Email</label>
                 <input v-model="createModal.email" :class="{'is-invalid': createModal.errors.email}"
                        class="form-control"
@@ -82,7 +82,7 @@
                        @focus="createModal.errors.email = ''">
                 <p class="input__message__error"><small>{{ createModal.errors.email }}</small></p>
               </div>
-              <div class="form-group">
+              <div class="form-group required-field">
                 <label :class="{'text-danger': createModal.errors.password}" for="password">Mật khẩu</label>
                 <div>
                   <div style="position: relative;">
@@ -127,14 +127,14 @@
                 <label for="username">Tên đăng nhập</label>
                 <div id="username" class=""> {{ updateModal.username }}</div>
               </div>
-              <div class="form-group">
+              <div class="form-group required-field">
                 <label :class="{'text-danger': updateModal.errors.name}" for="name">Tên hiển thị</label>
                 <input v-model="updateModal.name" :class="{'is-invalid': updateModal.errors.name}" class="form-control"
                        placeholder="Nhập tên hiển thị" type="text"
                        @focus="updateModal.errors.name = ''">
                 <p class="input__message__error"><small>{{ updateModal.errors.name }}</small></p>
               </div>
-              <div class="form-group">
+              <div class="form-group required-field">
                 <label :class="{'text-danger': updateModal.errors.email}" for="email">Email</label>
                 <input v-model="updateModal.email" :class="{'is-invalid': updateModal.errors.email}"
                        class="form-control"
@@ -145,7 +145,8 @@
               <div class="form-group">
                 <label :class="{'text-danger': updateModal.errors.password}" for="password">Mật khẩu</label>
                 <div>
-                  <input v-model="updateModal.hasNewPassword" type="checkbox"> Cập nhật mật khẩu
+                  <input id="changePass" v-model="updateModal.hasNewPassword" type="checkbox">&nbsp;
+                  <label for="changePass">Cập nhật mật khẩu</label>
                   <div v-if="updateModal.hasNewPassword" style="position: relative;margin-top: 10px">
                     <input
                       v-model="updateModal.password"

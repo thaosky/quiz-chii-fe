@@ -31,8 +31,8 @@
                     <td :title="detail.username" data-toggle="tooltip">
                       {{ detail.username }}
                     </td>
-                    <td :title="submittedTime_(detail.submittedAt)" data-toggle="tooltip">
-                      {{ submittedTime_(detail.submittedAt) }}
+                    <td :title="submittedTime(detail.submittedAt)" data-toggle="tooltip">
+                      {{ submittedTime(detail.submittedAt) }}
                     </td>
                     <td :title="calcTimeUsed(detail.startedAt, detail.submittedAt)" data-toggle="tooltip">
                       {{ calcTimeUsed(detail.startedAt, detail.submittedAt) }}
@@ -41,7 +41,7 @@
                       {{ detail.corrected }} / {{ detail.totalQuestion }}
                     </td>
                     <td :title="detail.corrected" data-toggle="tooltip">
-                      {{ (detail.corrected * 100 / detail.totalQuestion).toFixed(2) }}
+                      {{ calcPoint(detail.corrected, detail.totalQuestion) }}
                     </td>
                   </tr>
                   </tbody>
@@ -92,7 +92,7 @@ export default {
       const seconds = Math.floor(diff / 1000) - minutes * 60
       return `${minutes < 10 ? '0' + minutes : minutes}m:${seconds < 10 ? '0' + seconds : seconds}s`
     },
-    submittedTime_(submittedAt) {
+    submittedTime(submittedAt) {
       const date = new Date(submittedAt);
       let datePart = [
         date.getMonth() + 1,
@@ -109,8 +109,9 @@ export default {
     downloadExcel() {
       this.downloadFromUrl(this.$appConfig.apiBaseUrl + `/quiz/api/results/test/statistic-excel/${this.$route.params.id}`, 'statistics')
     },
-    downloadPDF() {
-      this.downloadFromUrl(this.$appConfig.apiBaseUrl + `/quiz/api/results/test/statistic-pdf/${this.$route.params.id}`, 'statistics')
+    calcPoint(corrected, totalQuestion) {
+      const numericPoint = '' + (corrected * 100 / totalQuestion).toFixed(2)
+      return parseFloat(numericPoint)
     },
     async downloadFromUrl(url, filename) {
       await axios.get(url, {

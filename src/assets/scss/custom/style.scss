@@ -1036,6 +1036,7 @@ _:-ms-fullscreen, :root .navbar-mochimochi img {
   min-width: 250px;
   cursor: pointer;
 }
+
 .td-ellipsis, .td-ellipsis * {
   max-width: 250px;
   text-overflow: ellipsis;
@@ -1049,4 +1050,18 @@ _:-ms-fullscreen, :root .navbar-mochimochi img {
 
 .td-ellipsis--modal {
   max-width: 200px;
+}
+
+.required-field label:after {
+  content: '*';
+  color: red;
+  margin-left: 5px;
+}
+
+.required-field.has-error label {
+  color: red;
+}
+
+.required-field.has-error input, .required-field.has-error textarea, .required-field.has-error .editr {
+  border: 1px solid red;
 }

@@ -8,7 +8,7 @@
         <section class="section section-lg pt-lg-0 w-100" style="margin-top: 200px">
           <div class="container">
             <div class="d-flex justify-content-center my-3">
-              <SearchCustom :tags="tagList" :searchContent="'Tìm kiếm theo tên tag'" @submit="searchByTag"></SearchCustom>
+              <SearchCustom :searchContent="'Tìm kiếm theo tên tag'" @submit="search"></SearchCustom>
             </div>
             <div v-if="store.isAdmin()" class="row mb-3" style="justify-content: end">
               <button class="btn btn-success" @click="showCreateModal">Thêm tag</button>
@@ -62,9 +62,9 @@
           <template>
             <form>
               <div class="form-row">
-                <div class="form-group col-md-12">
+                <div class="form-group col-md-12 required-field" :class="{ 'has-error': createModal.errors.name }">
                   <label for="content">Tên tag</label>
-                  <input v-model="createModal.name" class="form-control" required rows="5">
+                  <input v-model="createModal.name" class="form-control" required @focusout="createModal.errors.name = !createModal.name">
                 </div>
               </div>
               <div class="form-row">
@@ -87,9 +87,9 @@
           <template>
             <form>
               <div class="form-row">
-                <div class="form-group col-md-12">
+                <div class="form-group col-md-12 required-field" :class="{ 'has-error': editModal.errors.name }">
                   <label for="content">Tên tag</label>
-                  <input v-model="editModal.name" class="form-control" required rows="5">
+                  <input v-model="editModal.name" class="form-control" required @focusout="editModal.errors.name = !editModal.name">
                 </div>
               </div>
               <div class="form-row">
@@ -139,6 +139,7 @@ export default {
       pageSize: this.$route.query.size || 5,
       sortDir: this.$route.query.sortDir || 'DESC',
       sortName: this.$route.query.sortName || 'id',
+      keyword: this.$route.query.keyword || '',
       totalPage: 0,
       total: 0,
       deleteModal: {
@@ -149,12 +150,18 @@ export default {
         show: false,
         name: '',
         description: '',
+        errors: {
+          name: false,
+        },
       },
       editModal: {
         show: false,
         id: '',
         name: '',
         description: '',
+        errors: {
+          name: false,
+        },
       },
       loading: false,
     }
@@ -174,25 +181,30 @@ export default {
       this.deleteModal.show = true
       this.deleteModal.id = id
     },
+    search(tags, keyword) {
+      this.keyword = keyword
+      this.getTags()
+    },
     getTags () {
       this.loading = true
-      axios.get(this.$appConfig.apiBaseUrl + `/quiz/api/tags?pageNo=${this.pageNo - 1}&pageSize=${this.pageSize}&sortDir=${this.sortDir}&sortName=${this.sortName}`)
-          .then(res => {
-            this.tags = res.data.data.items
-            this.totalPage = res.data.data.totalPage
-            this.total = res.data.data.totalElements
-          })
-          .catch(err => {
-            store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
-          })
-          .finally(() => {
-            this.loading = false
-          })
+      axios.get(this.$appConfig.apiBaseUrl + `/quiz/api/tags?pageNo=${this.pageNo - 1}&pageSize=${this.pageSize}&sortDir=${this.sortDir}&sortName=${this.sortName}&name=${this.keyword}`)
+        .then(res => {
+          this.tags = res.data.data.items
+          this.totalPage = res.data.data.totalPage
+          this.total = res.data.data.totalElements
+        })
+        .catch(err => {
+          store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
+        })
+        .finally(() => {
+          this.loading = false
+        })
     },
     resetCreateModal () {
       this.createModal.show = false
       this.createModal.name = ''
       this.createModal.description = ''
+      this.createModal.errors.name = false
     },
     showCreateModal () {
       this.createModal.show = true
@@ -218,6 +230,7 @@ export default {
       this.editModal.id = tag.id
       this.editModal.name = tag.name
       this.editModal.description = tag.description
+      this.editModal.errors.name = false
     },
     async editTag () {
       await axios.put(this.$appConfig.apiBaseUrl + `/quiz/api/tags/${this.editModal.id}`, {

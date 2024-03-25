@@ -103,31 +103,31 @@
               <div class="form-row">
                 <div class="form-group col-md-12">
                   <label for="content">Nội dung câu hỏi</label>
-                  <wysiwyg v-model="createModal.content" class="form-control" required style="min-height: 150px;"/>
+                  <wysiwyg v-model="createModal.content" class="form-control" style="min-height: 150px;"/>
                 </div>
               </div>
               <div class="form-row">
-                <div class="form-group col-md-12">
+                <div class="form-group col-md-12 required-field" :class="{ 'has-error': createModal.errors.question }">
                   <label for="question">Dữ kiện cho câu hỏi</label>
                   <wysiwyg v-model="createModal.question" class="form-control" required style="min-height: 150px;"/>
                 </div>
               </div>
               <div class="form-row">
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-6 required-field" :class="{ 'has-error': createModal.errors.answer1 }">
                   <label for="answer1">Phương án A</label>
                   <wysiwyg v-model="createModal.answer1" class="form-control" required style="min-height: 150px;"/>
                 </div>
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-6 required-field" :class="{ 'has-error': createModal.errors.answer2 }">
                   <label for="answer2">Phương án B</label>
                   <wysiwyg v-model="createModal.answer2" class="form-control" required style="min-height: 150px;"/>
                 </div>
               </div>
               <div class="form-row">
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-6 required-field" :class="{ 'has-error': createModal.errors.answer3 }">
                   <label for="answer3">Phương án C</label>
                   <wysiwyg v-model="createModal.answer3" class="form-control" required style="min-height: 150px;"/>
                 </div>
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-6 required-field" :class="{ 'has-error': createModal.errors.answer4 }">
                   <label for="answer4">Phương án D</label>
                   <wysiwyg v-model="createModal.answer4" class="form-control" required style="min-height: 150px;"/>
                 </div>
@@ -135,9 +135,9 @@
               <div class="form-row">
                 <div class="form-group col-md-6">
                   <label for="correctAnswer">Giải thích</label>
-                  <wysiwyg v-model="createModal.explanation" class="form-control" required style="min-height: 150px;"/>
+                  <wysiwyg v-model="createModal.explanation" class="form-control" style="min-height: 150px;"/>
                 </div>
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-6 required-field" :class="{ 'has-error': createModal.errors.correctAnswer }">
                   <label for="correctAnswer">Đáp án</label>
                   <select v-model="createModal.correctAnswer" class="form-control" required>
                     <option value="1">A</option>
@@ -187,8 +187,7 @@
           </template>
           <template v-slot:footer>
             <button class="btn btn-secondary" type="button" @click="createModal.show = false">Đóng</button>
-            <button v-if="createFormValid" class="btn btn-success" type="button" @click="storeQuestion">Lưu</button>
-            <button v-else class="btn btn-dark" disabled type="button">Lưu</button>
+            <button class="btn btn-success" type="button" @click="storeQuestion">Lưu</button>
           </template>
         </modal>
         <modal :show="updateModal.show" modal-classes="modal-xl" @close="updateModal.show = false">
@@ -200,31 +199,31 @@
               <div class="form-row">
                 <div class="form-group col-md-12">
                   <label for="content">Nội dung câu hỏi</label>
-                  <wysiwyg v-model="updateModal.content" class="form-control" required style="min-height: 150px;"/>
+                  <wysiwyg v-model="updateModal.content" class="form-control" style="min-height: 150px;"/>
                 </div>
               </div>
               <div class="form-row">
-                <div class="form-group col-md-12">
+                <div class="form-group col-md-12 required-field" :class="{ 'has-error': updateModal.errors.question }">
                   <label for="question">Dữ kiện cho câu hỏi</label>
                   <wysiwyg v-model="updateModal.question" class="form-control" required style="min-height: 150px;"/>
                 </div>
               </div>
               <div class="form-row">
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-6 required-field" :class="{ 'has-error': updateModal.errors.answer1 }">
                   <label for="answer1">Phương án A</label>
                   <wysiwyg v-model="updateModal.answer1" class="form-control" required style="min-height: 150px;"/>
                 </div>
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-6 required-field" :class="{ 'has-error': updateModal.errors.answer2 }">
                   <label for="answer2">Phương án B</label>
                   <wysiwyg v-model="updateModal.answer2" class="form-control" required style="min-height: 150px;"/>
                 </div>
               </div>
               <div class="form-row">
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-6 required-field" :class="{ 'has-error': updateModal.errors.answer3 }">
                   <label for="answer3">Phương án C</label>
                   <wysiwyg v-model="updateModal.answer3" class="form-control" required style="min-height: 150px;"/>
                 </div>
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-6 required-field" :class="{ 'has-error': updateModal.errors.answer4 }">
                   <label for="answer4">Phương án D</label>
                   <wysiwyg v-model="updateModal.answer4" class="form-control" required style="min-height: 150px;"/>
                 </div>
@@ -232,9 +231,9 @@
               <div class="form-row">
                 <div class="form-group col-md-6">
                   <label for="correctAnswer">Giải thích</label>
-                  <wysiwyg v-model="updateModal.explanation" class="form-control" required style="min-height: 150px;"/>
+                  <wysiwyg v-model="updateModal.explanation" class="form-control" style="min-height: 150px;"/>
                 </div>
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-6 required-field" :class="{ 'has-error': updateModal.errors.correctAnswer }">
                   <label for="correctAnswer">Đáp án</label>
                   <select v-model="updateModal.correctAnswer" class="form-control" required>
                     <option value="1">A</option>
@@ -284,8 +283,7 @@
           </template>
           <template v-slot:footer>
             <button class="btn btn-secondary" type="button" @click="updateModal.show = false">Đóng</button>
-            <button v-if="updateFormValid" class="btn btn-primary" type="button" @click="updateQuestion">Lưu</button>
-            <button v-else class="btn btn-dark" disabled type="button">Lưu</button>
+            <button class="btn btn-primary" type="button" @click="updateQuestion">Lưu</button>
           </template>
         </modal>
         <modal :show="deleteModal.show" @close="deleteModal.show = false">
@@ -338,8 +336,16 @@ export default {
         answer3: '',
         answer4: '',
         explanation: '',
-        correctAnswer: '',
+        correctAnswer: 1,
         selectedTags: [],
+        errors: {
+          question: false,
+          answer1: false,
+          answer2: false,
+          answer3: false,
+          answer4: false,
+          correctAnswer: false,
+        },
       },
       uploadFile: null,
       updateModal: {
@@ -354,6 +360,14 @@ export default {
         explanation: '',
         correctAnswer: '',
         selectedTags: [],
+        errors: {
+          question: false,
+          answer1: false,
+          answer2: false,
+          answer3: false,
+          answer4: false,
+          correctAnswer: false,
+        },
       },
       deleteModal: {
         show: false,
@@ -371,16 +385,14 @@ export default {
     },
     createFormValid() {
       return this.createModal.question && this.createModal.answer1 &&
-        this.createModal.answer2 && this.createModal.answer3 && this.createModal.answer4 &&
-        this.createModal.correctAnswer
+        this.createModal.answer2 && this.createModal.answer3 && this.createModal.answer4
     },
     availableUpdateTags() {
       return this.tagNameList.filter(tag => !this.updateModal.selectedTags.includes(tag))
     },
     updateFormValid() {
       return this.updateModal.question && this.updateModal.answer1 &&
-        this.updateModal.answer2 && this.updateModal.answer3 && this.updateModal.answer4 &&
-        this.updateModal.correctAnswer
+        this.updateModal.answer2 && this.updateModal.answer3 && this.updateModal.answer4
     },
   },
   async created() {
@@ -504,6 +516,13 @@ export default {
     },
     async storeQuestion() {
       if (!this.createFormValid) {
+        this.createModal.errors.question = !this.createModal.question
+        console.log(this.createModal.question)
+        this.createModal.errors.answer1 = !this.createModal.answer1
+        this.createModal.errors.answer2 = !this.createModal.answer2
+        this.createModal.errors.answer3 = !this.createModal.answer3
+        this.createModal.errors.answer4 = !this.createModal.answer4
+        this.createModal.errors.correctAnswer = !this.createModal.correctAnswer
         alert('Vui lòng nhập đầy đủ thông tin')
         return
       }
@@ -521,7 +540,7 @@ export default {
           answer2: this.createModal.answer2,
           answer3: this.createModal.answer3,
           answer4: this.createModal.answer4,
-          correctAnswer: parseInt(this.createModal.correctAnswer),
+          correctAnswer: this.createModal.correctAnswer,
           tagList: tagIds,
           explanation: this.createModal.explanation,
         },
@@ -548,9 +567,17 @@ export default {
       this.createModal.answer2 = ''
       this.createModal.answer3 = ''
       this.createModal.answer4 = ''
-      this.createModal.correctAnswer = ''
+      this.createModal.correctAnswer = 1
       this.createModal.explanation = ''
       this.createModal.selectedTags = []
+      this.createModal.errors = {
+        question: false,
+        answer1: false,
+        answer2: false,
+        answer3: false,
+        answer4: false,
+        correctAnswer: false,
+      }
     },
     showCreateQuestionModal(question) {
       this.resetCreateModal()
@@ -567,6 +594,14 @@ export default {
       this.updateModal.correctAnswer = question.correctAnswer
       this.updateModal.selectedTags = question.tagList.map(tag => tag.name)
       this.updateModal.explanation = question.explanation
+      this.updateModal.errors = {
+        question: false,
+        answer1: false,
+        answer2: false,
+        answer3: false,
+        answer4: false,
+        correctAnswer: false,
+      }
       this.updateModal.show = true
     },
     showCopyQuestionModal(question) {
@@ -579,10 +614,24 @@ export default {
       this.createModal.correctAnswer = question.correctAnswer
       this.createModal.selectedTags = question.tagList.map(tag => tag.name)
       this.createModal.explanation = question.explanation
+      this.createModal.errors = {
+        question: false,
+        answer1: false,
+        answer2: false,
+        answer3: false,
+        answer4: false,
+        correctAnswer: false,
+      }
       this.createModal.show = true
     },
     async updateQuestion() {
       if (!this.updateFormValid) {
+        this.updateModal.errors.question = !this.updateModal.question
+        this.updateModal.errors.answer1 = !this.updateModal.answer1
+        this.updateModal.errors.answer2 = !this.updateModal.answer2
+        this.updateModal.errors.answer3 = !this.updateModal.answer3
+        this.updateModal.errors.answer4 = !this.updateModal.answer4
+        this.updateModal.errors.correctAnswer = !this.updateModal.correctAnswer
         alert('Vui lòng nhập đầy đủ thông tin')
         return
       }
@@ -601,7 +650,7 @@ export default {
           answer2: this.updateModal.answer2,
           answer3: this.updateModal.answer3,
           answer4: this.updateModal.answer4,
-          correctAnswer: parseInt(this.updateModal.correctAnswer),
+          correctAnswer: this.updateModal.correctAnswer,
           explanation: this.updateModal.explanation,
           tagList: tagIds
         },
@@ -628,7 +677,7 @@ export default {
       this.updateModal.answer2 = ''
       this.updateModal.answer3 = ''
       this.updateModal.answer4 = ''
-      this.updateModal.correctAnswer = ''
+      this.updateModal.correctAnswer = 1
       this.updateModal.explanation = ''
       this.updateModal.selectedTags = []
     },
