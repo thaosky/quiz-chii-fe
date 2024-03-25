@@ -13,11 +13,6 @@
                 @click="downloadExcel"
               >Download Excel
               </button>
-              <button
-                class="btn btn-outline-success mb-0"
-                @click="downloadPDF"
-              >Download PDF
-              </button>
             </div>
             <div class="row justify-content-center bg-white">
               <a-spin :spinning="loading" class="w-100" size="large">

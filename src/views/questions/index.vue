@@ -17,7 +17,7 @@
               >Download template
               </button>
               <div>
-                <button class="btn btn-success" @click="createModal.show = true">Thêm câu hỏi</button>
+                <button class="btn btn-success" @click="showCreateQuestionModal">Thêm câu hỏi</button>
                 <label class="btn btn-success mb-0" for="uploadFile">Upload file</label>
                 <input id="uploadFile" accept=".xlsx" style="display: none" type="file" @change="onFileChange">
                 <button class="btn btn-danger" @click="deleteModal.show = true">Xoá</button>
@@ -35,7 +35,7 @@
                     <th scope="col">Nội dung</th>
                     <th scope="col">Dữ kiện câu hỏi</th>
                     <th v-if="store.isAdmin()" scope="col" style="width: 160px">
-                      Phương án đúng
+                      Đáp án
                     </th>
                     <th scope="col" style="min-width: 130px">Giải thích</th>
                     <th scope="col" style="min-width: 130px">Tags</th>
@@ -138,7 +138,7 @@
                   <wysiwyg v-model="createModal.explanation" class="form-control" required style="min-height: 150px;"/>
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="correctAnswer">Phương án đúng</label>
+                  <label for="correctAnswer">Đáp án</label>
                   <select v-model="createModal.correctAnswer" class="form-control" required>
                     <option value="1">A</option>
                     <option value="2">B</option>
@@ -235,7 +235,7 @@
                   <wysiwyg v-model="updateModal.explanation" class="form-control" required style="min-height: 150px;"/>
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="correctAnswer">Phương án đúng</label>
+                  <label for="correctAnswer">Đáp án</label>
                   <select v-model="updateModal.correctAnswer" class="form-control" required>
                     <option value="1">A</option>
                     <option value="2">B</option>
@@ -370,17 +370,17 @@ export default {
       return this.tagNameList.filter(tag => !this.createModal.selectedTags.includes(tag))
     },
     createFormValid() {
-      return this.createModal.content && this.createModal.question && this.createModal.answer1 &&
+      return this.createModal.question && this.createModal.answer1 &&
         this.createModal.answer2 && this.createModal.answer3 && this.createModal.answer4 &&
-        this.createModal.correctAnswer && this.createModal.selectedTags.length > 0
+        this.createModal.correctAnswer
     },
     availableUpdateTags() {
       return this.tagNameList.filter(tag => !this.updateModal.selectedTags.includes(tag))
     },
     updateFormValid() {
-      return this.updateModal.content && this.updateModal.question && this.updateModal.answer1 &&
+      return this.updateModal.question && this.updateModal.answer1 &&
         this.updateModal.answer2 && this.updateModal.answer3 && this.updateModal.answer4 &&
-        this.updateModal.correctAnswer && this.updateModal.selectedTags.length > 0
+        this.updateModal.correctAnswer
     },
   },
   async created() {
@@ -551,6 +551,10 @@ export default {
       this.createModal.correctAnswer = ''
       this.createModal.explanation = ''
       this.createModal.selectedTags = []
+    },
+    showCreateQuestionModal(question) {
+      this.resetCreateModal()
+      this.createModal.show = true
     },
     showEditQuestionModal(question) {
       this.updateModal.id = question.id

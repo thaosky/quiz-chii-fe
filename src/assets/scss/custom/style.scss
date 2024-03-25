@@ -1042,3 +1042,11 @@ _:-ms-fullscreen, :root .navbar-mochimochi img {
   overflow: hidden;
   white-space: nowrap;
 }
+
+.td-ellipsis * {
+  display: inline;
+}
+
+.td-ellipsis--modal {
+  max-width: 200px;
+}

@@ -20,7 +20,7 @@
                 <th scope="col">Chọn</th>
                 <th scope="col">Nội dung</th>
                 <th scope="col">Câu hỏi</th>
-                <th scope="col">Phương án đúng</th>
+                <th scope="col">Đáp án</th>
                 <th scope="col">Tags</th>
               </tr>
               </thead>
@@ -29,9 +29,12 @@
                 <td>
                   <input v-model="addQuestionModal.selectingQuestionIds" :value="question.id" type="checkbox">
                 </td>
-                <td v-html="question.content"></td>
-                <td v-html="question.question"></td>
-                <td v-html="convertAnswer(question)"></td>
+                <td :title="stripHtmlTags(question.content)" class="td-ellipsis td-ellipsis--modal"
+                    data-toggle="tooltip" v-html="question.content"></td>
+                <td :title="stripHtmlTags(question.question)" class="td-ellipsis td-ellipsis--modal"
+                    data-toggle="tooltip" v-html="question.question"></td>
+                <td :title="stripHtmlTags(convertAnswer(question))" class="td-ellipsis td-ellipsis--modal"
+                    data-toggle="tooltip" v-html="convertAnswer(question)"></td>
                 <td>
                 <span v-for="tag in question.tagList" :key="tag.id" class="badge badge-primary mr-1">{{
                     tag.name
@@ -42,6 +45,12 @@
             </table>
             <SearchNoData v-else></SearchNoData>
           </a-spin>
+          <div v-if="addQuestionModal.totalPage > 1" class="d-flex justify-content-center">
+            <base-pagination
+              v-model="addQuestionModal.pageNo" :page-count="addQuestionModal.totalPage"
+              :per-page="addQuestionModal.pageSize"
+              :total="addQuestionModal.total"/>
+          </div>
 
           <template slot="footer">
             <base-button type="primary" @click="saveModalChanges">Save changes</base-button>
@@ -85,16 +94,16 @@
                     <div v-if="testType === 'ONCE_WITH_TIME'" class="form-group col-md-6">
                       <label for="startTime">Thời điểm bắt đầu</label>
                       <a-date-picker
-                          id="startTime"
-                          v-model="startTime"
-                          :disabled-date="disabledPrevDate"
-                          :show-time="{ defaultValue: moment('00:00', 'HH:mm'), format: 'HH:mm' }"
-                          :showToday="false"
-                          class="w-100"
-                          format="DD/MM/YYYY HH:mm"
-                          name="startDate"
-                          placeholder="Chọn ngày"
-                          valueFormat="YYYY-MM-DD HH:mm:00"
+                        id="startTime"
+                        v-model="startTime"
+                        :disabled-date="disabledPrevDate"
+                        :show-time="{ defaultValue: moment('00:00', 'HH:mm'), format: 'HH:mm' }"
+                        :showToday="false"
+                        class="w-100"
+                        format="DD/MM/YYYY HH:mm"
+                        name="startDate"
+                        placeholder="Chọn ngày"
+                        valueFormat="YYYY-MM-DD HH:mm:00"
                       />
                     </div>
                   </div>
@@ -193,10 +202,14 @@ export default {
     return {
       addQuestionModal: {
         show: false,
-        selectingTagId: null,
+        selectingTagId: '',
         questions: [],
         selectingQuestionIds: [],
-        selectedQuestionIds: []
+        selectedQuestionIds: [],
+        pageNo: 1,
+        pageSize: 10,
+        totalPage: 0,
+        total: 0,
       },
       tagList: [],
       questions: [],
@@ -221,7 +234,7 @@ export default {
   },
   created() {
     this.getTags()
-    this.getQuestions()
+    this.getAllQuestions()
     this.loading = true
     axios.get(this.$appConfig.apiBaseUrl + '/quiz/api/tests/' + this.$route.params.id, {
       headers: {
@@ -245,22 +258,31 @@ export default {
     moment,
     showModal() {
       this.addQuestionModal.show = true
-      this.addQuestionModal.selectingTagId = null
+      this.addQuestionModal.selectingTagId = ''
       this.addQuestionModal.questions = []
       this.addQuestionModal.selectingQuestionIds = this.addQuestionModal.selectedQuestionIds
+      this.addQuestionModal.pageNo = 1
+      this.addQuestionModal.totalPage = 0
+      this.addQuestionModal.total = 0
       this.getQuestionsForModal()
     },
     discardModalChanges() {
       this.addQuestionModal.show = false
-      this.addQuestionModal.selectingTagId = null
+      this.addQuestionModal.selectingTagId = ''
       this.addQuestionModal.questions = []
       this.addQuestionModal.selectingQuestionIds = this.addQuestionModal.selectedQuestionIds
+      this.addQuestionModal.pageNo = 1
+      this.addQuestionModal.totalPage = 0
+      this.addQuestionModal.total = 0
     },
     saveModalChanges() {
       this.addQuestionModal.show = false
-      this.addQuestionModal.selectingTagId = null
+      this.addQuestionModal.selectingTagId = ''
       this.addQuestionModal.questions = []
       this.addQuestionModal.selectedQuestionIds = this.addQuestionModal.selectingQuestionIds
+      this.addQuestionModal.pageNo = 1
+      this.addQuestionModal.totalPage = 0
+      this.addQuestionModal.total = 0
       this.getQuestions()
     },
     async storeTest() {
@@ -306,13 +328,16 @@ export default {
         })
     },
     async getQuestionsForModal() {
-      let url = this.$appConfig.apiBaseUrl + '/quiz/api/questions?pageSize=100000&pageNo=0'
+      let url = this.$appConfig.apiBaseUrl + '/quiz/api/questions?pageSize=' + this.addQuestionModal.pageSize
+        + '&pageNo=' + (this.addQuestionModal.pageNo - 1)
       if (this.addQuestionModal.selectingTagId) {
         url += '&tagId=' + this.addQuestionModal.selectingTagId
       }
       this.questionLoading = true
       await axios.get(url).then(res => {
         this.addQuestionModal.questions = res.data.data.items
+        this.addQuestionModal.totalPage = res.data.data.totalPage
+        this.addQuestionModal.total = res.data.data.total
       }).catch(err => {
         store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
       }).finally(() => {
@@ -331,7 +356,7 @@ export default {
           store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
         })
     },
-    async getQuestions() {
+    async getAllQuestions() {
       await axios.get(this.$appConfig.apiBaseUrl + '/quiz/api/questions?pageSize=100000&pageNo=0')
         .then(res => {
           this.questions = res.data.data.items
@@ -352,6 +377,13 @@ export default {
       }
       return question['answer' + question.correctAnswer]
     },
+    stripHtmlTags(str) {
+      let doc = new DOMParser().parseFromString(str, 'text/html');
+      return doc.body.textContent || "";
+    },
+  },
+  watch: {
+    'addQuestionModal.pageNo': 'getQuestionsForModal',
   }
 }
 </script>
