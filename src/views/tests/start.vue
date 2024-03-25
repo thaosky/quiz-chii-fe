@@ -231,6 +231,10 @@ export default {
         })
         .then(response => {
           this.questions = response.data.data.questionList
+          if (this.questions.length === 0) {
+            store.displayError('Không có câu hỏi nào trong bài thi này')
+            this.$router.push('/tests')
+          }
           this.availableTime = response.data.data.availableTime * 60 // convert to seconds
           if (response.data.data.testType === 'ONCE_WITH_TIME') {
             this.startedTime = response.data.data.startTime

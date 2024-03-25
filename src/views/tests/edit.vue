@@ -107,7 +107,6 @@
                         name="startDate"
                         placeholder="Chọn ngày"
                         valueFormat="YYYY-MM-DD HH:mm:00"
-                        @focusout="errors.startTime = !startTime"
                       />
                     </div>
                   </div>
@@ -300,6 +299,13 @@ export default {
     async storeTest() {
       if (!this.name || !this.availableTime) {
         store.displayError('Vui lòng nhập đầy đủ thông tin')
+        return
+      }
+
+      this.errors.startTime = false
+      if (this.testType === 'ONCE_WITH_TIME' && !this.startTime) {
+        store.displayError('Vui lòng chọn thời gian thi')
+        this.errors.startTime = true
         return
       }
 
