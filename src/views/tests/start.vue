@@ -301,6 +301,7 @@ export default {
         testName: this.testName,
         startedAt: this.startedTime,
         submittedAt: submittedAt,
+        timeToTest: this.passedTime,
         resultDetails: this.questions.map((question, index) => {
           return {
             questionId: question.id,

@@ -101,13 +101,13 @@
           <template>
             <form>
               <div class="form-row">
-                <div class="form-group col-md-12">
+                <div class="form-group col-md-12 required-field" :class="{ 'has-error': createModal.errors.content }">
                   <label for="content">Nội dung câu hỏi</label>
                   <wysiwyg v-model="createModal.content" class="form-control" style="min-height: 150px;"/>
                 </div>
               </div>
               <div class="form-row">
-                <div class="form-group col-md-12 required-field" :class="{ 'has-error': createModal.errors.question }">
+                <div class="form-group col-md-12">
                   <label for="question">Dữ kiện cho câu hỏi</label>
                   <wysiwyg v-model="createModal.question" class="form-control" required style="min-height: 150px;"/>
                 </div>
@@ -197,13 +197,13 @@
           <template>
             <form>
               <div class="form-row">
-                <div class="form-group col-md-12">
+                <div class="form-group col-md-12 required-field" :class="{ 'has-error': updateModal.errors.content }">
                   <label for="content">Nội dung câu hỏi</label>
                   <wysiwyg v-model="updateModal.content" class="form-control" style="min-height: 150px;"/>
                 </div>
               </div>
               <div class="form-row">
-                <div class="form-group col-md-12 required-field" :class="{ 'has-error': updateModal.errors.question }">
+                <div class="form-group col-md-12">
                   <label for="question">Dữ kiện cho câu hỏi</label>
                   <wysiwyg v-model="updateModal.question" class="form-control" required style="min-height: 150px;"/>
                 </div>
@@ -339,7 +339,7 @@ export default {
         correctAnswer: 1,
         selectedTags: [],
         errors: {
-          question: false,
+          content: false,
           answer1: false,
           answer2: false,
           answer3: false,
@@ -361,7 +361,7 @@ export default {
         correctAnswer: '',
         selectedTags: [],
         errors: {
-          question: false,
+          content: false,
           answer1: false,
           answer2: false,
           answer3: false,
@@ -384,14 +384,14 @@ export default {
       return this.tagNameList.filter(tag => !this.createModal.selectedTags.includes(tag))
     },
     createFormValid() {
-      return this.createModal.question && this.createModal.answer1 &&
+      return this.createModal.content && this.createModal.answer1 &&
         this.createModal.answer2 && this.createModal.answer3 && this.createModal.answer4
     },
     availableUpdateTags() {
       return this.tagNameList.filter(tag => !this.updateModal.selectedTags.includes(tag))
     },
     updateFormValid() {
-      return this.updateModal.question && this.updateModal.answer1 &&
+      return this.updateModal.content && this.updateModal.answer1 &&
         this.updateModal.answer2 && this.updateModal.answer3 && this.updateModal.answer4
     },
   },
@@ -516,8 +516,7 @@ export default {
     },
     async storeQuestion() {
       if (!this.createFormValid) {
-        this.createModal.errors.question = !this.createModal.question
-        console.log(this.createModal.question)
+        this.createModal.errors.content = !this.createModal.content
         this.createModal.errors.answer1 = !this.createModal.answer1
         this.createModal.errors.answer2 = !this.createModal.answer2
         this.createModal.errors.answer3 = !this.createModal.answer3
@@ -595,7 +594,7 @@ export default {
       this.updateModal.selectedTags = question.tagList.map(tag => tag.name)
       this.updateModal.explanation = question.explanation
       this.updateModal.errors = {
-        question: false,
+        content: false,
         answer1: false,
         answer2: false,
         answer3: false,
@@ -615,7 +614,7 @@ export default {
       this.createModal.selectedTags = question.tagList.map(tag => tag.name)
       this.createModal.explanation = question.explanation
       this.createModal.errors = {
-        question: false,
+        content: false,
         answer1: false,
         answer2: false,
         answer3: false,
@@ -626,7 +625,7 @@ export default {
     },
     async updateQuestion() {
       if (!this.updateFormValid) {
-        this.updateModal.errors.question = !this.updateModal.question
+        this.updateModal.errors.content = !this.updateModal.content
         this.updateModal.errors.answer1 = !this.updateModal.answer1
         this.updateModal.errors.answer2 = !this.updateModal.answer2
         this.updateModal.errors.answer3 = !this.updateModal.answer3
