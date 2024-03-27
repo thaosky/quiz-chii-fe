@@ -167,7 +167,7 @@
               </div>
               <div class="form-group">
                 <label for="active">Trạng thái</label>
-                <select v-model="updateModal.active" class="form-control">
+                <select v-model="updateModal.active" class="form-control" :disabled="store.user.id === updateModal.id">
                   <option value="1">Đang hoạt động</option>
                   <option value="0">Đã khóa</option>
                 </select>
