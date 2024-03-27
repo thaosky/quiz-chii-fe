@@ -50,7 +50,9 @@
                       {{ shortenContent(test.availableTime) + ' phút' }}
                     </td>
                     <td>
-                      <span v-for="tag in test.tagList" :key="tag.id" class="badge badge-primary">{{ tag.name }}</span>
+                      <template v-for="tag in test.tagList">
+                        <span v-if="tag" class="badge badge-primary">{{ tag.name }}</span>
+                      </template>
                     </td>
                     <td style="display: flex; justify-content: center">
                       <template v-if="!store.isLoggedIn()">

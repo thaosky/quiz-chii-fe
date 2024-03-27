@@ -108,43 +108,6 @@
                   />
                 </div>
               </div>
-              <div class="form-row">
-                <div class="form-group col-md-12">
-                  <label for="tags">Tags</label>
-                  <b-form-tags
-                    v-if="tagNameList.length > 0"
-                    id="tags-component-select"
-                    v-model="selectedTags"
-                    add-on-change
-                    class="mb-2"
-                    no-outer-focus
-                  >
-                    <template v-slot="{ tags, inputAttrs, inputHandlers, disabled, removeTag }">
-                      <ul v-if="tags.length > 0" class="list-inline d-inline-block mb-2">
-                        <li v-for="tag in tags" :key="tag" class="list-inline-item">
-                          <b-form-tag
-                            :disabled="disabled"
-                            :title="tag"
-                            @remove="removeTag(tag)"
-                          >{{ tag }}
-                          </b-form-tag>
-                        </li>
-                      </ul>
-                      <b-form-select
-                        :disabled="disabled || availableTags.length === 0"
-                        :options="availableTags"
-                        v-bind="inputAttrs"
-                        v-on="inputHandlers"
-                      >
-                        <template #first>
-                          <!-- This is required to prevent bugs with Safari -->
-                          <option disabled value="">Chọn tag</option>
-                        </template>
-                      </b-form-select>
-                    </template>
-                  </b-form-tags>
-                </div>
-              </div>
             </form>
 
             <button class="btn btn-primary" type="button" @click="showModal">Thêm câu hỏi</button>
