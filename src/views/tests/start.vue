@@ -56,7 +56,7 @@
                     </div>
                     <div class="col-8">
                       <div class="div-answer-game" style="margin-top: 30px">
-                        <div v-for="answerNo in [1,2,3,4]" :key="answerNo" class="bg-answer-item">
+                        <div v-for="answerNo in currentQuestion.randomizedAnswerOrder" :key="answerNo" class="bg-answer-item">
                           <div :class="{'answer-review-item-success': currentAnswer === answerNo}"
                                :data-answer="answerNo"
                                class="answer-review-item item-game text-center" @click="setAnswer(answerNo)">
@@ -163,6 +163,7 @@
 
 <script>
 import axios from 'axios'
+import moment from "moment";
 import {store} from '@/store'
 
 export default {
@@ -230,7 +231,10 @@ export default {
           }
         })
         .then(response => {
-          this.questions = response.data.data.questionList
+          this.questions = this.shuffle(response.data.data.questionList)
+          for (let i = 0; i < this.questions.length; i++) {
+            this.questions[i].randomizedAnswerOrder = this.shuffle([1, 2, 3, 4])
+          }
           if (this.questions.length === 0) {
             store.displayError('Không có câu hỏi nào trong bài thi này')
             this.$router.push('/tests')
@@ -238,15 +242,15 @@ export default {
           this.availableTime = response.data.data.availableTime * 60 // convert to seconds
           if (response.data.data.testType === 'ONCE_WITH_TIME') {
             this.startedTime = response.data.data.startTime
-            this.passedTime = Math.floor((new Date() - new Date(this.startedTime)) / 1000)
+            this.passedTime = moment().diff(moment(this.startedTime), 'seconds')
           } else {
-            this.startedTime = new Date().toISOString().slice(0, 19).replace('T', ' ')
+            this.startedTime = moment().format('YYYY-MM-DD HH:mm:ss')
           }
           this.totalQuestions = this.questions.length
           this.testName = response.data.data.name
           // set Interval to count down. When time is up, submit test and clear interval
           this.interval = setInterval(() => {
-            this.passedTime++
+            this.passedTime = moment().diff(moment(this.startedTime), 'seconds')
             if (this.passedTime >= this.availableTime) {
               this.submit()
               clearInterval(this.interval)
@@ -328,14 +332,24 @@ export default {
       this.currentQuestionNo = index
       this.currentAnswer = this.answers[index] || 0
     },
+    shuffle(array) {
+      let currentIndex = array.length, randomIndex
+      while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex)
+        currentIndex--
+        [array[currentIndex], array[randomIndex]] = [
+          array[randomIndex], array[currentIndex]
+        ]
+      }
+      return array
+    },
   },
   beforeDestroy() {
     clearInterval(this.interval)
     window.onbeforeunload = null
   },
-  beforeRouteUpdate(to, from, next) {
-    console.log(to.path)
-    if (to.path !== '/tests/start/' + this.$route.params.id) {
+  beforeRouteLeave(to, from, next) {
+    if (!to.path.includes('/statistics')) {
       const confirm = window.confirm('Are you sure you want to leave? Your progress will be lost.')
       if (confirm) {
         next()
@@ -343,6 +357,7 @@ export default {
         next(false)
       }
     }
+    next()
   }
 }
 </script>

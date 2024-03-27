@@ -7,14 +7,17 @@
             <img src="img/theme/cloud1.png"
                  style="width: 100%">
           </div>
-          <div class="result-questions" style="position: absolute; right: 15px; top: 350px">
+          <div
+            v-if="result.resultDetails && result.resultDetails[currentQuestionIndex].explanation"
+            class="result-questions" style="position: absolute; right: 15px; top: 350px"
+          >
             <h2 class="result-box-header result-box-title">Giải thích</h2>
             <div class="result-box-body">
               <span class="text-center">
                 {{ result.resultDetails[currentQuestionIndex].explanation }}
               </span>
             </div>
-            <img src="img/theme/mochi1.png" class="result-img">
+            <img class="result-img" src="img/theme/mochi1.png">
           </div>
         </div>
         <div class="col-6 _col-2 main-center" style="min-height: 616px;">
@@ -60,8 +63,9 @@
                           <div class="text-center w-100">
                             <div class="title-game-2">
                               <i
-                                  :class="currentQuestion.correctAnswer === currentQuestion.answered ? 'fa-check text-success' : 'fa-times text-danger'" aria-hidden="true" class="fa fa-check"
-                                  style="margin-right: 20px">
+                                :class="currentQuestion.correctAnswer === currentQuestion.answered ? 'fa-check text-success' : 'fa-times text-danger'"
+                                aria-hidden="true" class="fa fa-check"
+                                style="margin-right: 20px">
                               </i>
                               <span v-html="currentQuestion.content"></span>
                             </div>
@@ -131,13 +135,13 @@
 
 <script>
 import axios from 'axios'
-import { BFormTags, BFormTag, BFormSelect } from 'bootstrap-vue'
+import {BFormTags, BFormTag, BFormSelect} from 'bootstrap-vue'
 import Modal from '@/components/Modal.vue'
-import { store } from '@/store'
+import {store} from '@/store'
 
 export default {
   name: 'statistic-detail',
-  data () {
+  data() {
     return {
       store,
       result: {},
@@ -145,11 +149,11 @@ export default {
     }
   },
   computed: {
-    percentage () {
+    percentage() {
       if (!this.result.resultDetails) return 0
       return (this.result.corrected / this.result.resultDetails.length) * 100
     },
-    timeUsed () {
+    timeUsed() {
       // convert string to date, then get the difference in seconds
       const diff = (new Date(this.result.submittedAt) - new Date(this.result.startedAt)) / 1000
       // convert seconds to minutes
@@ -171,24 +175,24 @@ export default {
       return datePart + " " + timePart;
     },
 
-    currentQuestion () {
+    currentQuestion() {
       if (!this.result.resultDetails) return {}
       return this.result.resultDetails[this.currentQuestionIndex]
     }
   },
-  async created () {
+  async created() {
     await axios.get(this.$appConfig.apiBaseUrl + '/quiz/api/results/' + this.$route.params.id,
-        {
-          headers: {
-            'Authorization': `Bearer ${store.token}`
-          }
-        })
-        .then(response => {
-          this.result = response.data.data
-        })
+      {
+        headers: {
+          'Authorization': `Bearer ${store.token}`
+        }
+      })
+      .then(response => {
+        this.result = response.data.data
+      })
   },
   methods: {
-    goToQuestion (index) {
+    goToQuestion(index) {
       this.currentQuestionIndex = index
     }
   }
