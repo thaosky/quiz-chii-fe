@@ -15,12 +15,17 @@
           </template>
         </Title>
         <section class="section section-lg pt-lg-0 w-100" style="margin-top: 200px">
-          <div class="container">
+          <div class="container container-lg">
             <div class="d-flex justify-content-center my-3">
-              <SearchCustom :tags="tagList" :searchContent="'Tìm kiếm theo tên bài kiểm tra'" @submit="searchByTag"></SearchCustom>
+              <SearchCustom :searchContent="'Tìm kiếm theo tên bài kiểm tra'" :tags="tagList"
+                            @submit="searchByTag"></SearchCustom>
             </div>
             <div v-if="store.isAdmin()" class="row mb-3" style="justify-content: flex-end">
               <router-link class="btn btn-success" to="/tests/create">Thêm quiz</router-link>
+            </div>
+            <div v-if="store.isLoggedIn() && !store.isAdmin()" class="row mb-3 mt-5" style="justify-content: flex-start">
+              <input id="onlyShowTakenTest" v-model="onlyShowTakenTest" class="mr-2" type="checkbox">
+              <label class="m-0" for="onlyShowTakenTest">Chỉ hiển thị bài quiz đã thi</label>
             </div>
             <div class="row justify-content-center bg-white">
               <a-spin :spinning="loading" class="w-100" size="large">
@@ -31,54 +36,66 @@
                     <th scope="col">Mô tả</th>
                     <th scope="col">Ngày thi</th>
                     <th scope="col">Thời lượng</th>
+                    <th v-if="store.isLoggedIn() && !store.isAdmin()" scope="col">Số lần đã thi</th>
+                    <th v-if="store.isLoggedIn() && !store.isAdmin()" scope="col">Điểm TB</th>
                     <th scope="col">Tags</th>
                     <th scope="col"></th>
                   </tr>
                   </thead>
                   <tbody>
-                  <tr v-for="test in tests" :key="test.id">
-                    <td :title="test.name" data-toggle="tooltip">
-                      {{ shortenContent(test.name) }}
-                    </td>
-                    <td :title="test.description" data-toggle="tooltip">
-                      {{ shortenContent(test.description) }}
-                    </td>
-                    <td :title="test.startTime" data-toggle="tooltip">
-                      {{ test.startTime }}
-                    </td>
-                    <td :title="test.availableTime" data-toggle="tooltip">
-                      {{ shortenContent(test.availableTime) + ' phút' }}
-                    </td>
-                    <td>
-                      <template v-for="tag in test.tagList">
-                        <span v-if="tag" class="badge badge-primary">{{ tag.name }}</span>
-                      </template>
-                    </td>
-                    <td style="display: flex; justify-content: center">
-                      <template v-if="!store.isLoggedIn()">
-                        <router-link
-                          :to="{ name: 'tests.detail', params: { id: test.id } }"
-                          class="btn btn-sm btn-neutral">Xem
-                        </router-link>
-                      </template>
-                      <template v-if="store.isLoggedIn()">
-                        <router-link
-                          :to="{ name: 'tests.start', params: { id: test.id } }"
-                          class="btn btn-sm btn-success"
-                          :class="{ 'disabled': checkTestTimeOver(test) }"
-                        >
-                          Thi
-                        </router-link>
-                        <template v-if="store.isAdmin()">
-                          <router-link
-                            :to="{ name: 'tests.edit', params: { id: test.id } }"
-                            class="btn btn-sm btn-primary">Sửa
-                          </router-link>
-                          <button class="btn btn-sm btn-danger" @click="showDeleteModal(test)">Xóa</button>
+                  <template v-for="test in tests">
+                    <tr v-if="!onlyShowTakenTest || test.countSubmitByUser"
+                        :key="test.id"
+                        :class="store.isLoggedIn() && !store.isAdmin() && test.countSubmitByUser ? 'test-taken' : ''">
+                      <td :title="test.name" data-toggle="tooltip">
+                        {{ shortenContent(test.name) }}
+                      </td>
+                      <td :title="test.description" data-toggle="tooltip">
+                        {{ shortenContent(test.description) }}
+                      </td>
+                      <td :title="test.startTime" data-toggle="tooltip">
+                        {{ test.startTime }}
+                      </td>
+                      <td :title="test.availableTime" data-toggle="tooltip">
+                        {{ shortenContent(test.availableTime) + ' phút' }}
+                      </td>
+                      <td v-if="store.isLoggedIn() && !store.isAdmin()">
+                        {{ test.countSubmitByUser }}
+                      </td>
+                      <td v-if="store.isLoggedIn() && !store.isAdmin()">
+                        {{ test.averagePointByUser }}
+                      </td>
+                      <td>
+                        <template v-for="tag in test.tagList">
+                          <span v-if="tag" class="badge badge-primary">{{ tag.name }}</span>
                         </template>
-                      </template>
-                    </td>
-                  </tr>
+                      </td>
+                      <td style="display: flex; justify-content: center">
+                        <template v-if="!store.isLoggedIn()">
+                          <router-link
+                            :to="{ name: 'tests.detail', params: { id: test.id } }"
+                            class="btn btn-sm btn-neutral">Xem
+                          </router-link>
+                        </template>
+                        <template v-if="store.isLoggedIn()">
+                          <router-link
+                            :class="{ 'disabled': checkCanStartTest(test) }"
+                            :to="{ name: 'tests.start', params: { id: test.id } }"
+                            class="btn btn-sm btn-success"
+                          >
+                            Thi
+                          </router-link>
+                          <template v-if="store.isAdmin()">
+                            <router-link
+                              :to="{ name: 'tests.edit', params: { id: test.id } }"
+                              class="btn btn-sm btn-primary">Sửa
+                            </router-link>
+                            <button class="btn btn-sm btn-danger" @click="showDeleteModal(test)">Xóa</button>
+                          </template>
+                        </template>
+                      </td>
+                    </tr>
+                  </template>
                   </tbody>
                 </table>
                 <SearchNoData v-else></SearchNoData>
@@ -139,6 +156,7 @@ export default {
       tagList: [],
       loading: false,
       achievement: 0,
+      onlyShowTakenTest: false,
       now: moment(),
     }
   },
@@ -170,7 +188,7 @@ export default {
             Authorization: `Bearer ${store.token}`
           }
         }).then(res => {
-            this.achievement = res.data.data.days;
+          this.achievement = res.data.data.days;
         }).catch(err => {
           store.displayError('Có lỗi xảy ra. Vui lòng thử lại')
         })
@@ -187,6 +205,9 @@ export default {
       if (this.testType) {
         url += `&testType=${this.testType}`
       }
+      if (store.isLoggedIn()) {
+        url += `&username=${store.user.username}`
+      }
       this.loading = true
       await axios.get(url).then(res => {
         this.tests = res.data.data.items
@@ -198,7 +219,10 @@ export default {
         this.loading = false
       })
     },
-    checkTestTimeOver(test) {
+    checkCanStartTest(test) {
+      if ((test.testType === 'ONCE_WITH_TIME' || test.testType === 'ONCE_WITHOUT_TIME') && test.countSubmitByUser > 0) {
+        return false
+      }
       if (test.testType === 'ONCE_WITH_TIME') {
         // check if the time is already over using moment
         const endTime = moment(test.endTime, 'DD/MM/YYYY HH:mm')
@@ -265,10 +289,19 @@ export default {
 .achievement-count {
   color: #ee9b1f;
 }
+
 .btn-success.disabled, .btn-success:disabled {
   background-color: darkgrey;
   border: darkgray;
 }
 
-
+.test-taken td:first-child:after {
+  background-image: url('/img/icons/tick-icon.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+}
 </style>

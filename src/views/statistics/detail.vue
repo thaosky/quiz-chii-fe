@@ -13,9 +13,7 @@
           >
             <h2 class="result-box-header result-box-title">Giải thích</h2>
             <div class="result-box-body">
-              <span class="text-center">
-                {{ result.resultDetails[currentQuestionIndex].explanation }}
-              </span>
+              <div class="text-center" v-html="result.resultDetails[currentQuestionIndex].explanation"></div>
             </div>
             <img class="result-img" src="img/theme/mochi1.png">
           </div>
