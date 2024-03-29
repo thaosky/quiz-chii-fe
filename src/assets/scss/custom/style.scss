@@ -1065,3 +1065,10 @@ _:-ms-fullscreen, :root .navbar-mochimochi img {
 .required-field.has-error input, .required-field.has-error textarea, .required-field.has-error .editr {
   border: 1px solid red;
 }
+.row.justify-content-center.bg-white {
+  width: 100%;
+  overflow: auto;
+}
+.table {
+  min-width: 800px;
+}

@@ -7,7 +7,11 @@
           <div class="col-3 _col-1 position-r">
             <div class="logo-menu vertical-center">
               <router-link to="/tests">
-                <img src="img/theme/quizchii_white.png" class="w-100 logo-pc">
+                <picture>
+                  <source srcset="img/theme/quizchii_white.png" media="(min-width: 768px)">
+                  <source srcset="img/theme/avatar.png" media="(max-width: 768px)">
+                  <img src="img/theme/quizchii_white.png" class="logo-pc">
+                </picture>
               </router-link>
               <a class="open-loading" href="https://learn.mochidemy.com">
                 <img src="img/theme/mochi_new.png" class="w-100 logo-small">
@@ -259,4 +263,14 @@ export default {
 };
 </script>
 <style>
+.logo-pc {
+  max-height: 68px;
+  width: 100%;
+}
+@media (max-width: 768px) {
+  .logo-pc {
+    width: auto;
+    margin: 0 auto;
+  }
+}
 </style>

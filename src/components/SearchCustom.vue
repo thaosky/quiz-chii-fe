@@ -16,7 +16,7 @@
       </div>
       <input id="key_search" v-model="keyword" autocomplete="off" class="search__input" name="key"
              :placeholder="searchContent" :style="{
-                width: tags && tags.length ? '373px' : '543px',
+                width: tags && tags.length ? 'calc(100% - 227px)' : 'calc(100% - 57px)'
              }">
     </div>
 

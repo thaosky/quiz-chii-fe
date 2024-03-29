@@ -290,6 +290,18 @@ export default {
   color: #ee9b1f;
 }
 
+@media screen and (max-width: 992px) {
+  .achievement {
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .achievement {
+    font-size: 12px;
+  }
+}
+
 .btn-success.disabled, .btn-success:disabled {
   background-color: darkgrey;
   border: darkgray;
