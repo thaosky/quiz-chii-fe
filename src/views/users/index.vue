@@ -8,11 +8,12 @@
         <section class="section section-lg pt-lg-0 w-100" style="margin-top: 200px">
           <div class="container">
             <div class="d-flex justify-content-center my-3">
-              <SearchCustom :searchContent="'Tìm kiếm theo username'" :tags="[]" @submit="searchUsers"></SearchCustom>
+              <SearchCustom :searchContent="'Tìm kiếm theo username, tên, hoặc email'" :tags="[]" @submit="searchUsers"></SearchCustom>
             </div>
             <div class="row mb-3" style="justify-content: end">
               <button class="btn btn-success" @click="createModal.show=true">Thêm user</button>
             </div>
+
             <div class="row justify-content-center bg-white">
               <a-spin :spinning="loading" class="w-100" size="large">
                 <table v-if="users.length" class="table table-striped">
